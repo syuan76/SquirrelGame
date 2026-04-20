@@ -9,10 +9,15 @@ public class Player {
     private int highScore;
     private boolean isFlying;
     private Image image;
-    private double gravity;
+    private double gravity = 0.5;
     private boolean isJumping;
     private boolean isCollided;
     private boolean isAlive;
+
+    // Variables for gravity
+    private int dY = 0;
+    private int terminalVelocity = 10;
+
 
     public Player() {
         // TODO: complete constructor
@@ -24,6 +29,13 @@ public class Player {
 
     public void jump() {
         // TODO
+        dY += gravity;
+        // Cap the falling speed
+        if (dY > terminalVelocity){
+            dY = terminalVelocity;
+        }
+
+        this.y += dY;
     }
 
     public void duck() {
