@@ -5,12 +5,15 @@ import java.awt.image.BufferStrategy;
 
 public class GameView extends JFrame {
     private Game backend;
+    private Image background;
     private final int WINDOW_WIDTH = 1200;
     private final int WINDOW_HEIGHT = 800;
 
     public GameView(Game backend) {
         // TODO: complete constructor
         this.backend = backend;
+
+        this.background = new ImageIcon("Resources/PlatformerBackground.jpg").getImage());
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setTitle("SQUIRREL GAME");

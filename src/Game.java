@@ -1,3 +1,4 @@
+import java.awt.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,7 +10,6 @@ public class Game implements ActionListener {
     private ArrayList<Obstacle> obstacles;
     private ArrayList<Acorn> projectiles;
     private int gameState;
-    private int background;
     private int timer;
     private static final int SLEEP_TIME = 50;
     private boolean isGameOver;
