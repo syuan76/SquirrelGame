@@ -13,7 +13,7 @@ public class GameView extends JFrame {
         // TODO: complete constructor
         this.backend = backend;
 
-        this.background = new ImageIcon("Resources/PlatformerBackground.jpg").getImage());
+        this.background = new ImageIcon("Resources/PlatformerBackground.jpg").getImage();
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setTitle("SQUIRREL GAME");
@@ -28,6 +28,7 @@ public class GameView extends JFrame {
 
     public void drawBackground(Graphics g) {
         // TODO
+        g.drawImage(background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
     }
 
     public void drawScore(Graphics g) {
@@ -68,5 +69,10 @@ public class GameView extends JFrame {
 
     public void myPaint(Graphics g) {
         // TODO
+        if (backend.getGameState() == Game.STATE_MAIN_GROUND) {
+            drawBackground(g);
+            backend.getObstacles().get(0).draw(g);
+        }
+
     }
 }

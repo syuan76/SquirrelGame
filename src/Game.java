@@ -24,9 +24,23 @@ public class Game implements ActionListener {
     public Game() {
         // TODO: complete constructor
         window = new GameView(this);
+        obstacles = new ArrayList<Obstacle>();
+        obstacles.add(new Obstacle(window));
 
         Timer clock = new Timer(SLEEP_TIME, this);
         clock.start();
+    }
+
+    public int getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(int gameState) {
+        this.gameState = gameState;
+    }
+
+    public ArrayList<Obstacle> getObstacles() {
+        return obstacles;
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -43,6 +57,8 @@ public class Game implements ActionListener {
 
     public void play() {
         // TODO
+        gameState = STATE_MAIN_GROUND;
+        window.repaint();
     }
 
     public void spawnObstacle() {
@@ -55,5 +71,6 @@ public class Game implements ActionListener {
 
     public static void main(String[] args) {
         Game game = new Game();
+        game.play();
     }
 }

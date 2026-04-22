@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.*;
 
 public class Obstacle {
@@ -9,8 +10,12 @@ public class Obstacle {
     private int speed;
     private boolean isActive;
 
-    public Obstacle() {
+    private GameView view;
+
+    public Obstacle(GameView view) {
         // TODO: complete constructor
+        this.image = new ImageIcon("Resources/Snake.png").getImage();
+        this.view = view;
     }
 
     public boolean collides() {
@@ -35,6 +40,7 @@ public class Obstacle {
 
     public void draw(Graphics g) {
         // TODO
+        g.drawImage(image, 550, 540, 150, 150, view);
         return;
     }
 
