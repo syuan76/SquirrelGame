@@ -1,10 +1,11 @@
+import java.awt.event.KeyListener;
+import java.awt.event.KeyEvent;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-
-public class Game implements ActionListener {
+public class Game implements KeyListener, ActionListener {
     private Player player;
     private ArrayList<Obstacle> obstacles;
     private ArrayList<Acorn> projectiles;
@@ -13,6 +14,7 @@ public class Game implements ActionListener {
     private int timer;
     private static final int SLEEP_TIME = 50;
     private boolean isGameOver;
+    private Player p;
 
     private GameView window;
 
@@ -24,6 +26,9 @@ public class Game implements ActionListener {
     public Game() {
         // TODO: complete constructor
         window = new GameView(this);
+        window.addKeyListener(this);
+
+        p = new Player();
 
         Timer clock = new Timer(SLEEP_TIME, this);
         clock.start();
@@ -33,6 +38,28 @@ public class Game implements ActionListener {
         // TODO
     }
 
+    // Return player
+    public Player getPlayer(){
+        return this.p;
+    }
+    // Jump button
+    public void keyPressed(KeyEvent e){
+        switch(e.getKeyCode()){
+            case KeyEvent.VK_SPACE:
+                p.jump();
+                window.repaint();
+                System.out.println("SPACE");
+        }
+
+    }
+
+    public void keyReleased(KeyEvent e){
+
+    }
+
+    public void keyTyped(KeyEvent e){
+
+    }
     public void restartGame() {
         // TODO
     }

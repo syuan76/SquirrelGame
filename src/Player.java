@@ -29,6 +29,12 @@ public class Player {
 
     public void jump() {
         // TODO
+        isJumping = false;
+        if (!isJumping) {
+            dY = -10;
+            isJumping = true;
+        }
+
         dY += gravity;
         // Cap the falling speed
         if (dY > terminalVelocity){
@@ -60,6 +66,8 @@ public class Player {
 
     public void draw(Graphics g) {
         // TODO
+        g.setColor(Color.black);
+        g.drawOval(600, 400, 50, 50 );
     }
     public void isOnGround() {
         // TODO

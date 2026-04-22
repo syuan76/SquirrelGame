@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 
-public class GameView extends JFrame {
+public class GameView extends JFrame{
     private Game backend;
     private final int WINDOW_WIDTH = 1200;
     private final int WINDOW_HEIGHT = 800;
@@ -37,6 +37,7 @@ public class GameView extends JFrame {
 
     public void keyPressed(KeyEvent e) {
         // TODO
+
     }
 
     public void KeyReleased(KeyEvent e) {
@@ -65,5 +66,8 @@ public class GameView extends JFrame {
 
     public void myPaint(Graphics g) {
         // TODO
+        g.setColor(Color.WHITE);
+        g.fillRect(0,  0, WINDOW_WIDTH, WINDOW_HEIGHT);
+        backend.getPlayer().draw(g);
     }
 }
