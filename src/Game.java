@@ -1,12 +1,17 @@
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class Game {
+
+public class Game implements ActionListener {
     private Player player;
     private ArrayList<Obstacle> obstacles;
     private ArrayList<Acorn> projectiles;
     private int gameState;
     private int background;
     private int timer;
+    private static final int SLEEP_TIME = 50;
     private boolean isGameOver;
 
     private GameView window;
@@ -19,6 +24,13 @@ public class Game {
     public Game() {
         // TODO: complete constructor
         window = new GameView(this);
+
+        Timer clock = new Timer(SLEEP_TIME, this);
+        clock.start();
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        // TODO
     }
 
     public void restartGame() {
