@@ -9,14 +9,15 @@ public class Player {
     private int highScore;
     private boolean isFlying;
     private Image image;
-    private double gravity = 0.5;
+    private double gravity = 0.25;
     private boolean isJumping;
     private boolean isCollided;
     private boolean isAlive;
+    private boolean isDucking;
 
     // Variables for gravity
     private double dY = 0.0;
-    private double terminalVelocity = 10.0;
+    private double terminalVelocity = 400.0;
 
 
     public Player() {
@@ -29,21 +30,42 @@ public class Player {
 
     public void move() {
         // TODO
+        dY += gravity;
+
+        if (dY > terminalVelocity) {
+            dY = terminalVelocity;
+        }
+
+        y += dY;
+
+        // Bring player back down after jump
+        if (y >= 600) {
+            y = 600;
+            dY = 0;
+        }
     }
 
     public void jump() {
         // TODO
-        // Jump up instantly
-        y -= 100;
-
-//        // Bring player back down after jump
-//        if (y < 600) {
-//            y = 600;
-//        }
+        // Jump up
+        if (y >= 600) {
+            dY = - 10;
+        }
     }
 
     public void duck() {
         // TODO
+        if (y <= 600){
+            isDucking = true;
+            height = 25;
+            y = 625;
+        }
+    }
+
+    public void stand(){
+        isDucking = false;
+        height = 50;
+        y = 600;
     }
 
     public void fireAcorn() {
