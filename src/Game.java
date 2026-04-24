@@ -23,9 +23,12 @@ public class Game implements ActionListener {
 
     public Game() {
         // TODO: complete constructor
+        isGameOver = false;
         window = new GameView(this);
         obstacles = new ArrayList<Obstacle>();
-        obstacles.add(new Obstacle(window));
+        for (int i = 0; i < 50; i++) {
+            obstacles.add(new Obstacle(window));
+        }
 
         Timer clock = new Timer(SLEEP_TIME, this);
         clock.start();
@@ -45,6 +48,10 @@ public class Game implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         // TODO
+        for (int i = 0; i < obstacles.size(); i++) {
+            obstacles.get(i).move();
+        }
+        window.repaint();
     }
 
     public void restartGame() {

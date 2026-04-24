@@ -2,12 +2,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
+import java.util.ArrayList;
 
 public class GameView extends JFrame {
     private Game backend;
     private Image background;
     private final int WINDOW_WIDTH = 1200;
     private final int WINDOW_HEIGHT = 800;
+    private final int PLATFORMER_HEIGHT = 540;
 
     public GameView(Game backend) {
         // TODO: complete constructor
@@ -20,6 +22,10 @@ public class GameView extends JFrame {
         this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         this.setVisible(true);
         createBufferStrategy(2);
+    }
+
+    public int getPLATFORMER_HEIGHT() {
+        return PLATFORMER_HEIGHT;
     }
 
     public void drawInstructions(Graphics g) {
@@ -71,7 +77,9 @@ public class GameView extends JFrame {
         // TODO
         if (backend.getGameState() == Game.STATE_MAIN_GROUND) {
             drawBackground(g);
-            backend.getObstacles().get(0).draw(g);
+            for (int i = 0; i < backend.getObstacles().size(); i++) {
+                backend.getObstacles().get(i).draw(g);
+            }
         }
 
     }

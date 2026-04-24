@@ -2,10 +2,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Obstacle {
-    private int x;
-    private int y;
-    private int width;
-    private int height;
+    private int x, y, dx, dy;
+    private static final int WIDTH = 150;
+    private static final int HEIGHT = 150;
+    private int viewWidth;
+    private int viewHeight;
     private Image image;
     private int speed;
     private boolean isActive;
@@ -16,6 +17,20 @@ public class Obstacle {
         // TODO: complete constructor
         this.image = new ImageIcon("Resources/Snake.png").getImage();
         this.view = view;
+        this.viewWidth = view.getWidth();
+        this.viewHeight = view.getHeight();
+        this.speed = 10;
+
+        this.x = (int)(Math.random() * viewWidth);
+        this.y = view.getPLATFORMER_HEIGHT();
+        this.dx = speed;
+        this.dy = 0;
+    }
+
+    public void move() {
+        // TODO
+        x -= dx;
+        y += dy;
     }
 
     public boolean collides() {
@@ -28,11 +43,6 @@ public class Obstacle {
         return;
     }
 
-    public void move() {
-        // TODO
-        return;
-    }
-
     public void takeDamage() {
         // TODO
         return;
@@ -40,8 +50,7 @@ public class Obstacle {
 
     public void draw(Graphics g) {
         // TODO
-        g.drawImage(image, 550, 540, 150, 150, view);
-        return;
+        g.drawImage(image, x, y, WIDTH, HEIGHT, view);
     }
 
     public boolean isOffScreen() {
