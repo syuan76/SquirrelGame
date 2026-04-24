@@ -14,7 +14,6 @@ public class Game implements KeyListener, ActionListener {
     private int timer;
     private static final int SLEEP_TIME = 50;
     private boolean isGameOver;
-    private Player p;
 
     private GameView window;
 
@@ -28,7 +27,7 @@ public class Game implements KeyListener, ActionListener {
         window = new GameView(this);
         window.addKeyListener(this);
 
-        p = new Player();
+        player = new Player();
 
         Timer clock = new Timer(SLEEP_TIME, this);
         clock.start();
@@ -40,17 +39,17 @@ public class Game implements KeyListener, ActionListener {
 
     // Return player
     public Player getPlayer(){
-        return this.p;
+        return this.player;
     }
     // Jump button
     public void keyPressed(KeyEvent e){
         switch(e.getKeyCode()){
             case KeyEvent.VK_SPACE:
-                p.jump();
+                player.jump();
                 window.repaint();
                 System.out.println("SPACE");
         }
-
+        window.repaint();
     }
 
     public void keyReleased(KeyEvent e){

@@ -15,12 +15,16 @@ public class Player {
     private boolean isAlive;
 
     // Variables for gravity
-    private int dY = 0;
-    private int terminalVelocity = 10;
+    private double dY = 0.0;
+    private double terminalVelocity = 10.0;
 
 
     public Player() {
         // TODO: complete constructor
+        x = 200;
+        y= 600;
+        width = 50;
+        height = 50;
     }
 
     public void move() {
@@ -29,19 +33,13 @@ public class Player {
 
     public void jump() {
         // TODO
-        isJumping = false;
-        if (!isJumping) {
-            dY = -10;
-            isJumping = true;
-        }
+        // Jump up instantly
+        y -= 100;
 
-        dY += gravity;
-        // Cap the falling speed
-        if (dY > terminalVelocity){
-            dY = terminalVelocity;
-        }
-
-        this.y += dY;
+//        // Bring player back down after jump
+//        if (y < 600) {
+//            y = 600;
+//        }
     }
 
     public void duck() {
@@ -67,9 +65,10 @@ public class Player {
     public void draw(Graphics g) {
         // TODO
         g.setColor(Color.black);
-        g.drawOval(600, 400, 50, 50 );
+        g.drawOval(x, y, width, height);
     }
     public void isOnGround() {
         // TODO
+
     }
 }
