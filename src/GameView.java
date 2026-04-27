@@ -4,7 +4,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 
-public class GameView extends JFrame {
+public class GameView extends JFrame{
     private Game backend;
     private Image background;
     private final int WINDOW_WIDTH = 1200;
@@ -75,11 +75,19 @@ public class GameView extends JFrame {
 
     public void myPaint(Graphics g) {
         // TODO
+
+
         if (backend.getGameState() == Game.STATE_MAIN_GROUND) {
             drawBackground(g);
+            // Draw Obstacles
             for (int i = 0; i < backend.getObstacles().size(); i++) {
                 backend.getObstacles().get(i).draw(g);
             }
+
+            // Draw Player
+            g.setColor(Color.WHITE);
+//            g.fillRect(0,  0, WINDOW_WIDTH, WINDOW_HEIGHT);
+            backend.getPlayer().draw(g);
         }
 
     }
