@@ -21,7 +21,7 @@ public class Obstacle {
         this.viewHeight = view.getHeight();
         this.speed = 10;
 
-        this.x = (int)(Math.random() * viewWidth);
+        this.x = viewWidth;
         this.y = view.getPLATFORMER_HEIGHT();
         this.dx = speed;
         this.dy = 0;
@@ -54,7 +54,6 @@ public class Obstacle {
     }
 
     public boolean isOffScreen() {
-        // TODO
-        return false;
+        return x + WIDTH < 0;
     }
 }

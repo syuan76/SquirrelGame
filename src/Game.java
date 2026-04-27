@@ -10,9 +10,11 @@ public class Game implements ActionListener {
     private ArrayList<Obstacle> obstacles;
     private ArrayList<Acorn> projectiles;
     private int gameState;
-    private int timer;
+    private int score;
     private static final int SLEEP_TIME = 50;
     private boolean isGameOver;
+    private int obstacleSpawnTimer;
+    private int nextObstacleSpawnTime;
 
     private GameView window;
 
@@ -26,9 +28,9 @@ public class Game implements ActionListener {
         isGameOver = false;
         window = new GameView(this);
         obstacles = new ArrayList<Obstacle>();
-        for (int i = 0; i < 50; i++) {
-            obstacles.add(new Obstacle(window));
-        }
+
+        obstacleSpawnTimer = 0;
+        nextObstacleSpawnTime = getRandomSpawnTime();
 
         Timer clock = new Timer(SLEEP_TIME, this);
         clock.start();
@@ -46,10 +48,33 @@ public class Game implements ActionListener {
         return obstacles;
     }
 
+    public int getRandomSpawnTime() {
+        // Obstacle spawns every 1.5 to 4 seconds randomly
+        return 30 + (int)(Math.random() * 31);
+    }
+
     public void actionPerformed(ActionEvent e) {
         // TODO
+        obstacleSpawnTimer++;
+        if (obstacleSpawnTimer >= nextObstacleSpawnTime) {
+            spawnObstacle();
+            obstacleSpawnTimer = 0;
+            nextObstacleSpawnTime = getRandomSpawnTime();
+        }
         for (int i = 0; i < obstacles.size(); i++) {
-            obstacles.get(i).move();
+            Obstacle o = obstacles.get(i);
+            o.move();
+            if (o.isOffScreen()) {
+                obstacles.remove(i);
+                // Account for the fact that removing an element would skip over an index
+                i--;
+            }
+        }
+        for (int i = 0; i < obstacles.size(); i++) {
+            if (obstacles.get(i).isOffScreen()) {
+                obstacles.remove(i);
+                i--;
+            }
         }
         window.repaint();
     }
@@ -69,7 +94,7 @@ public class Game implements ActionListener {
     }
 
     public void spawnObstacle() {
-        // TODO
+        obstacles.add(new Obstacle(window));
     }
 
     public void checkGameOver() {
