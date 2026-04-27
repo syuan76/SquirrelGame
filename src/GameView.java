@@ -86,7 +86,7 @@ public class GameView extends JFrame{
 
             // Draw Player
             g.setColor(Color.WHITE);
-            g.fillRect(0,  0, WINDOW_WIDTH, WINDOW_HEIGHT);
+//            g.fillRect(0,  0, WINDOW_WIDTH, WINDOW_HEIGHT);
             backend.getPlayer().draw(g);
         }
 

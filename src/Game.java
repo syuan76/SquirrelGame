@@ -12,8 +12,7 @@ public class Game implements KeyListener, ActionListener {
     private ArrayList<Acorn> projectiles;
     private int gameState;
     private int score;
-    private static final int SLEEP_TIME = 50;
-    private int background;
+    private static final int SLEEP_TIME = 10;
     private boolean isGameOver;
     private int obstacleSpawnTimer;
     private int nextObstacleSpawnTime;
