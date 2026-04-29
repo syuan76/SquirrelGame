@@ -3,8 +3,8 @@ import java.awt.*;
 
 public class Obstacle {
     private int x, y, dx, dy;
-    private static final int WIDTH = 150;
-    private static final int HEIGHT = 150;
+    private final int WIDTH = 75;
+    private final int HEIGHT = 100;
     private int viewWidth;
     private int viewHeight;
     private Image image;
@@ -19,10 +19,10 @@ public class Obstacle {
         this.view = view;
         this.viewWidth = view.getWidth();
         this.viewHeight = view.getHeight();
-        this.speed = 10;
+        this.speed = 5;
 
         this.x = viewWidth;
-        this.y = view.getPLATFORMER_HEIGHT();
+        this.y = view.getPLATFORMER_HEIGHT() - HEIGHT;
         this.dx = speed;
         this.dy = 0;
     }
@@ -31,6 +31,26 @@ public class Obstacle {
         // TODO
         x -= dx;
         y += dy;
+    }
+
+    public Rectangle getBounds() {
+        return new Rectangle(x, y, WIDTH, HEIGHT);
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getWIDTH() {
+        return WIDTH;
+    }
+
+    public int getHEIGHT() {
+        return HEIGHT;
     }
 
     public boolean collides() {

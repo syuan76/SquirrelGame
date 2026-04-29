@@ -9,7 +9,7 @@ public class GameView extends JFrame{
     private Image background;
     private final int WINDOW_WIDTH = 1200;
     private final int WINDOW_HEIGHT = 800;
-    private final int PLATFORMER_HEIGHT = 540;
+    private final int PLATFORMER_HEIGHT = 670;
 
     public GameView(Game backend) {
         // TODO: complete constructor
@@ -93,6 +93,9 @@ public class GameView extends JFrame{
             g.setColor(Color.WHITE);
 //            g.fillRect(0,  0, WINDOW_WIDTH, WINDOW_HEIGHT);
             backend.getPlayer().draw(g);
+        } else if (backend.getGameState() == Game.STATE_END) {
+            g.setColor(Color.WHITE);
+            g.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
         }
 
     }
