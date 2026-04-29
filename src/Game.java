@@ -30,7 +30,7 @@ public class Game implements KeyListener, ActionListener {
         window = new GameView(this);
         window.addKeyListener(this);
 
-        player = new Player();
+        player = new Player(window);
         obstacles = new ArrayList<Obstacle>();
 
         obstacleSpawnTimer = 0;

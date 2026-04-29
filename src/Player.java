@@ -14,16 +14,18 @@ public class Player {
     private boolean isCollided;
     private boolean isAlive;
     private boolean isDucking;
+    private GameView view;
 
     // Variables for gravity
     private double dY = 0.0;
     private double terminalVelocity = 400.0;
 
 
-    public Player() {
+    public Player(GameView view) {
         // TODO: complete constructor
+        this.view = view;
         x = 200;
-        y= 600;
+        y = view.getPLATFORMER_HEIGHT();
         width = 50;
         height = 50;
     }
@@ -39,33 +41,36 @@ public class Player {
         y += dY;
 
         // Bring player back down after jump
-        if (y >= 600) {
-            y = 600;
+        if (isOnGround()) {
+            y = view.getPLATFORMER_HEIGHT();
             dY = 0;
+            isJumping = false;
         }
     }
 
     public void jump() {
         // TODO
         // Jump up
-        if (y >= 600) {
+        if (isOnGround() && !isDucking) {
             dY = - 10;
+            isJumping = true;
         }
     }
 
     public void duck() {
         // TODO
-        if (y <= 600){
+        if (y <= view.getPLATFORMER_HEIGHT() && !isJumping){
             isDucking = true;
+            y += 25;
             height = 25;
-            y = 625;
         }
     }
 
     public void stand(){
+        y -= 25;
         isDucking = false;
+        isJumping = false;
         height = 50;
-        y = 600;
     }
 
     public void fireAcorn() {
@@ -89,8 +94,8 @@ public class Player {
         g.setColor(Color.black);
         g.drawOval(x, y, width, height);
     }
-    public void isOnGround() {
-        // TODO
+    public boolean isOnGround() {
+        return y >= view.getPLATFORMER_HEIGHT();
 
     }
 }
