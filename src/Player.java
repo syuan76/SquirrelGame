@@ -24,10 +24,11 @@ public class Player {
     public Player(GameView view) {
         // TODO: complete constructor
         this.view = view;
-        x = 200;
-        y = view.getPLATFORMER_HEIGHT() - height;
         width = 50;
         height = 50;
+        x = 200;
+        y = view.getPLATFORMER_HEIGHT() - height;
+
     }
 
     public void move() {
