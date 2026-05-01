@@ -14,18 +14,21 @@ public class Player {
     private boolean isCollided;
     private boolean isAlive;
     private boolean isDucking;
+    private GameView view;
 
     // Variables for gravity
     private double dY = 0.0;
     private double terminalVelocity = 400.0;
 
 
-    public Player() {
+    public Player(GameView view) {
         // TODO: complete constructor
-        x = 200;
-        y= 600;
+        this.view = view;
         width = 50;
         height = 50;
+        x = 200;
+        y = view.getPLATFORMER_HEIGHT() - height;
+
     }
 
     public void move() {
@@ -39,37 +42,42 @@ public class Player {
         y += dY;
 
         // Bring player back down after jump
-        if (y >= 600) {
-            y = 600;
+        if (isOnGround()) {
+            y = view.getPLATFORMER_HEIGHT() - height;
             dY = 0;
+            isJumping = false;
         }
     }
 
     public void jump() {
         // TODO
         // Jump up
-        if (y >= 600) {
+        if (isOnGround() && !isDucking) {
             dY = - 10;
+            isJumping = true;
         }
     }
 
     public void duck() {
         // TODO
-        if (y <= 600){
+        if (isOnGround() && !isJumping){
             isDucking = true;
             height = 25;
-            y = 625;
+            y = view.getPLATFORMER_HEIGHT() - height;
         }
     }
 
     public void stand(){
-        isDucking = false;
-        height = 50;
-        y = 600;
+        if(isDucking){
+            isDucking = false;
+            height = 50;
+            y = view.getPLATFORMER_HEIGHT() - height;
+        }
+        isJumping = false;
     }
 
-    public void fireAcorn() {
-        // TODO
+    public Acorn fireAcorn() {
+        return new Acorn(x + width, y + height / 2);
     }
 
     public int getScore() {
@@ -89,8 +97,8 @@ public class Player {
         g.setColor(Color.black);
         g.drawOval(x, y, width, height);
     }
-    public void isOnGround() {
-        // TODO
+    public boolean isOnGround() {
+        return y + height >= view.getPLATFORMER_HEIGHT();
 
     }
 }
