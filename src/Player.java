@@ -25,7 +25,7 @@ public class Player {
         // TODO: complete constructor
         this.view = view;
         x = 200;
-        y = view.getPLATFORMER_HEIGHT();
+        y = view.getPLATFORMER_HEIGHT() - height;
         width = 50;
         height = 50;
     }
@@ -42,7 +42,7 @@ public class Player {
 
         // Bring player back down after jump
         if (isOnGround()) {
-            y = view.getPLATFORMER_HEIGHT();
+            y = view.getPLATFORMER_HEIGHT() - height;
             dY = 0;
             isJumping = false;
         }
@@ -59,22 +59,24 @@ public class Player {
 
     public void duck() {
         // TODO
-        if (y <= view.getPLATFORMER_HEIGHT() && !isJumping){
+        if (isOnGround() && !isJumping){
             isDucking = true;
-            y += 25;
             height = 25;
+            y = view.getPLATFORMER_HEIGHT() - height;
         }
     }
 
     public void stand(){
-        y -= 25;
-        isDucking = false;
+        if(isDucking){
+            isDucking = false;
+            height = 50;
+            y = view.getPLATFORMER_HEIGHT() - height;
+        }
         isJumping = false;
-        height = 50;
     }
 
-    public void fireAcorn() {
-        // TODO
+    public Acorn fireAcorn() {
+        return new Acorn(x + width, y + height / 2);
     }
 
     public int getScore() {
@@ -95,7 +97,7 @@ public class Player {
         g.drawOval(x, y, width, height);
     }
     public boolean isOnGround() {
-        return y >= view.getPLATFORMER_HEIGHT();
+        return y + height >= view.getPLATFORMER_HEIGHT();
 
     }
 }

@@ -33,6 +33,7 @@ public class Game implements KeyListener, ActionListener {
         player = new Player(window);
         obstacles = new ArrayList<Obstacle>();
 
+        projectiles = new ArrayList<Acorn>();
         obstacleSpawnTimer = 0;
         nextObstacleSpawnTime = getRandomSpawnTime();
 
@@ -50,6 +51,10 @@ public class Game implements KeyListener, ActionListener {
 
     public ArrayList<Obstacle> getObstacles() {
         return obstacles;
+    }
+
+    public ArrayList<Acorn> getAcorns() {
+        return projectiles;
     }
 
     public int getRandomSpawnTime() {
@@ -82,6 +87,15 @@ public class Game implements KeyListener, ActionListener {
                 i--;
             }
         }
+
+        for (int i = 0; i < projectiles.size(); i++){
+            Acorn a = projectiles.get(i);
+            a.fire();
+            if (a.isOffScreen(window.getWidth())){
+                projectiles.remove(i);
+                i--;
+            }
+        }
         window.repaint();
     }
 
@@ -99,6 +113,11 @@ public class Game implements KeyListener, ActionListener {
 
             case KeyEvent.VK_DOWN:
                 player.duck();
+                window.repaint();
+                break;
+
+            case KeyEvent.VK_SPACE:
+                projectiles.add(player.fireAcorn());
                 window.repaint();
                 break;
         }

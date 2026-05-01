@@ -84,6 +84,11 @@ public class GameView extends JFrame{
                 backend.getObstacles().get(i).draw(g);
             }
 
+            // Draw acorns
+            for (int i = 0; i < backend.getAcorns().size(); i++){
+                backend.getAcorns().get(i).draw(g);
+            }
+
             // Draw Player
             g.setColor(Color.WHITE);
 //            g.fillRect(0,  0, WINDOW_WIDTH, WINDOW_HEIGHT);

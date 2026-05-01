@@ -9,17 +9,28 @@ public class Acorn {
     private Image image;
     private boolean hasHit;
 
-    public Acorn() {
-        // TODO: complete constructor
+    public Acorn(int x, int y) {
+        this.x = x;
+        this.y = y;
+        this.width = 10;
+        this.height = 10;
+        this.speed = 8;
+        this.hasHit = false;
     }
 
+    public boolean isOffScreen(int windowWidth){
+        return x > windowWidth;
+    }
+
+    public boolean hasHit(){
+        return hasHit;
+    }
     public void fire() {
-        // TODO
-        return;
+        x += speed;
     }
 
     public void draw(Graphics g) {
-        // TODO
-        return;
+        g.setColor(Color.orange);
+        g.fillOval(x, y, width, height);
     }
 }
