@@ -58,8 +58,8 @@ public class Game implements KeyListener, ActionListener {
     }
 
     public int getRandomSpawnTime() {
-        // Obstacle spawns every 1.5 to 4 seconds randomly
-        return 30 + (int)(Math.random() * 31);
+        // Obstacle spawns every 1.5 to 3 seconds randomly
+        return 150 + (int)(Math.random() * 151);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -80,12 +80,7 @@ public class Game implements KeyListener, ActionListener {
                 // Account for the fact that removing an element would skip over an index
                 i--;
             }
-        }
-        for (int i = 0; i < obstacles.size(); i++) {
-            if (obstacles.get(i).isOffScreen()) {
-                obstacles.remove(i);
-                i--;
-            }
+            checkGameOver();
         }
 
         for (int i = 0; i < projectiles.size(); i++){
@@ -140,8 +135,14 @@ public class Game implements KeyListener, ActionListener {
         // TODO
     }
 
-    public void checkCollisions() {
-        // TODO
+    public boolean checkCollisions() {
+        for (int i = 0; i < obstacles.size(); i++) {
+            Obstacle o = obstacles.get(i);
+            if (player.getBounds().intersects(o.getBounds())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void play() {
@@ -156,6 +157,9 @@ public class Game implements KeyListener, ActionListener {
 
     public void checkGameOver() {
         // TODO
+        if (checkCollisions()) {
+            gameState = STATE_END;
+        }
     }
 
     public static void main(String[] args) {

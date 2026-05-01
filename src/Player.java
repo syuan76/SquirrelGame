@@ -1,9 +1,14 @@
+import javax.swing.*;
 import java.awt.*;
 
 public class Player {
     private int x;
     private int y;
-    private int width;
+    private int defaultY;
+    private final int WIDTH = 100;
+    private final int HEIGHT = 123;
+    private int viewWidth;
+    private int viewHeight;
     private int height;
     private int score;
     private int highScore;
@@ -14,6 +19,7 @@ public class Player {
     private boolean isCollided;
     private boolean isAlive;
     private boolean isDucking;
+
     private GameView view;
 
     // Variables for gravity
@@ -23,12 +29,15 @@ public class Player {
 
     public Player(GameView view) {
         // TODO: complete constructor
-        this.view = view;
-        width = 50;
-        height = 50;
-        x = 200;
-        y = view.getPLATFORMER_HEIGHT() - height;
 
+        this.view = view;
+        this.viewWidth = view.getWidth();
+        this.viewHeight = view.getHeight();
+        defaultY = view.getPLATFORMER_HEIGHT() - HEIGHT;
+        this.x = viewWidth / 2;
+        // TODO: take care of magic numbers
+        this.y = defaultY;
+        image = new ImageIcon("Resources/Squirrel.png").getImage();
     }
 
     public void move() {
@@ -42,17 +51,16 @@ public class Player {
         y += dY;
 
         // Bring player back down after jump
-        if (isOnGround()) {
-            y = view.getPLATFORMER_HEIGHT() - height;
+        if (y >= defaultY) {
+            y = defaultY;
             dY = 0;
-            isJumping = false;
         }
     }
 
     public void jump() {
         // TODO
         // Jump up
-        if (isOnGround() && !isDucking) {
+        if (y >= defaultY) {
             dY = - 10;
             isJumping = true;
         }
@@ -60,10 +68,10 @@ public class Player {
 
     public void duck() {
         // TODO
-        if (isOnGround() && !isJumping){
+        if (y <= defaultY){
             isDucking = true;
             height = 25;
-            y = view.getPLATFORMER_HEIGHT() - height;
+            y = defaultY + 25;
         }
     }
 
@@ -71,13 +79,33 @@ public class Player {
         if(isDucking){
             isDucking = false;
             height = 50;
-            y = view.getPLATFORMER_HEIGHT() - height;
+            y = defaultY;
         }
         isJumping = false;
     }
 
     public Acorn fireAcorn() {
-        return new Acorn(x + width, y + height / 2);
+        return new Acorn(x + WIDTH, y + height / 2);
+    }
+
+    public Rectangle getBounds() {
+        return new Rectangle(x, y, WIDTH, HEIGHT);
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getWIDTH() {
+        return WIDTH;
+    }
+
+    public int getHEIGHT() {
+        return HEIGHT;
     }
 
     public int getScore() {
@@ -94,8 +122,7 @@ public class Player {
 
     public void draw(Graphics g) {
         // TODO
-        g.setColor(Color.black);
-        g.drawOval(x, y, width, height);
+        g.drawImage(image, x, y, WIDTH, HEIGHT, view);
     }
     public boolean isOnGround() {
         return y + height >= view.getPLATFORMER_HEIGHT();
