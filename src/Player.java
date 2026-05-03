@@ -10,8 +10,6 @@ public class Player {
     private int viewWidth;
     private int viewHeight;
     private int height;
-    private int score;
-    private int highScore;
     private boolean isFlying;
     private Image image;
     private double gravity = 0.25;
@@ -106,18 +104,6 @@ public class Player {
 
     public int getHEIGHT() {
         return HEIGHT;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public int getHighScore() {
-        return highScore;
-    }
-
-    public void updateHighScore(int highScore) {
-        this.highScore = highScore;
     }
 
     public void draw(Graphics g) {
