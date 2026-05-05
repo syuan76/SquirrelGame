@@ -163,7 +163,7 @@ public class Game implements KeyListener, ActionListener {
     }
 
     public void keyTyped(KeyEvent e){
-
+        // TODO: remove if unused
     }
     public void restartGame() {
         // TODO: Complete once highScore and score logic implemented
