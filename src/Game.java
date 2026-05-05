@@ -12,6 +12,8 @@ public class Game implements KeyListener, ActionListener {
     private ArrayList<Acorn> projectiles;
     private int gameState;
     private int score;
+    private int scoreTimer;
+    private int highScore;
     private static final int SLEEP_TIME = 10;
     private boolean isGameOver;
     private int obstacleSpawnTimer;
@@ -49,6 +51,14 @@ public class Game implements KeyListener, ActionListener {
         this.gameState = gameState;
     }
 
+    public int getScore() {
+        return score;
+    }
+
+    public int getHighScore() {
+        return highScore;
+    }
+
     public ArrayList<Obstacle> getObstacles() {
         return obstacles;
     }
@@ -58,14 +68,28 @@ public class Game implements KeyListener, ActionListener {
     }
 
     public int getRandomSpawnTime() {
-        // Obstacle spawns every 1.5 to 3 seconds randomly
-        return 150 + (int)(Math.random() * 151);
+        // TODO: have spawn time gradually increase as the game goes on to increase difficulty
+        // Obstacle spawns every 1 to 2 seconds randomly
+        return 100 + (int)(Math.random() * 101);
     }
 
     public void actionPerformed(ActionEvent e) {
-        // TODO
-        player.move();
+        if (gameState == STATE_MAIN_GROUND) {
+            actionPerformedGround();
+        } else if (gameState == STATE_MAIN_FLYING) {
+            // TODO: Implement flying state
+        }
+        window.repaint();
+    }
 
+    public void actionPerformedGround() {
+        player.move();
+        scoreTimer++;
+        // Increment score every 0.1 seconds
+        if (scoreTimer >= 10) {
+            score++;
+            scoreTimer = 0;
+        }
         obstacleSpawnTimer++;
         if (obstacleSpawnTimer >= nextObstacleSpawnTime) {
             spawnObstacle();
@@ -80,7 +104,6 @@ public class Game implements KeyListener, ActionListener {
                 // Account for the fact that removing an element would skip over an index
                 i--;
             }
-            checkGameOver();
         }
 
         for (int i = 0; i < projectiles.size(); i++){
@@ -91,7 +114,7 @@ public class Game implements KeyListener, ActionListener {
                 i--;
             }
         }
-        window.repaint();
+        checkGameOver();
     }
 
     // Return player
@@ -100,21 +123,32 @@ public class Game implements KeyListener, ActionListener {
     }
     // Jump button
     public void keyPressed(KeyEvent e){
-        switch(e.getKeyCode()){
-            case KeyEvent.VK_UP:
-                player.jump();
-                window.repaint();
-                break;
+        if (gameState == STATE_INSTR) {
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                gameState = STATE_MAIN_GROUND;
+            }
+        } else if (gameState == STATE_MAIN_GROUND) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_UP:
+                    player.jump();
+                    window.repaint();
+                    break;
 
-            case KeyEvent.VK_DOWN:
-                player.duck();
-                window.repaint();
-                break;
+                case KeyEvent.VK_DOWN:
+                    player.duck();
+                    window.repaint();
+                    break;
 
-            case KeyEvent.VK_SPACE:
-                projectiles.add(player.fireAcorn());
-                window.repaint();
-                break;
+                case KeyEvent.VK_SPACE:
+                    projectiles.add(player.fireAcorn());
+                    window.repaint();
+                    break;
+            }
+        } else if (gameState == STATE_END) {
+            if (e.getKeyCode() == KeyEvent.VK_R) {
+                // NOTE: restartGame() isn't completely done yet
+                restartGame();
+            }
         }
         window.repaint();
     }
@@ -129,10 +163,18 @@ public class Game implements KeyListener, ActionListener {
     }
 
     public void keyTyped(KeyEvent e){
-
+        // TODO: remove if unused
     }
     public void restartGame() {
-        // TODO
+        // TODO: Complete once highScore and score logic implemented
+        player = new Player(window);
+        obstacles.clear();
+        projectiles.clear();
+        score = 0;
+        scoreTimer = 0;
+        obstacleSpawnTimer = 0;
+        nextObstacleSpawnTime = getRandomSpawnTime();
+        gameState = STATE_MAIN_GROUND;
     }
 
     public boolean checkCollisions() {
@@ -146,8 +188,7 @@ public class Game implements KeyListener, ActionListener {
     }
 
     public void play() {
-        // TODO
-        gameState = STATE_MAIN_GROUND;
+        gameState = STATE_INSTR;
         window.repaint();
     }
 
@@ -156,8 +197,10 @@ public class Game implements KeyListener, ActionListener {
     }
 
     public void checkGameOver() {
-        // TODO
         if (checkCollisions()) {
+            if (score > highScore) {
+                highScore = score;
+            }
             gameState = STATE_END;
         }
     }

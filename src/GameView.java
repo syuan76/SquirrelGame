@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
-import java.util.ArrayList;
 
 public class GameView extends JFrame{
     private Game backend;
@@ -29,16 +28,28 @@ public class GameView extends JFrame{
     }
 
     public void drawInstructions(Graphics g) {
-        // TODO
+        // TODO: If time permits, replace instructions window with one designed on Canva
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0 , WINDOW_WIDTH, WINDOW_HEIGHT);
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Arial", Font.BOLD, 48));
+        g.drawString("SQUIRREL GAME", 400, 250);
+        g.setFont(new Font("Arial", Font.PLAIN, 28));
+        g.drawString("Press ENTER to start", 450, 350);
+        g.drawString("UP = jump", 500, 400);
+        g.drawString("DOWN = duck", 500, 440);
+        g.drawString("SPACE = fire acorn", 500, 480);
     }
 
-    public void drawBackground(Graphics g) {
-        // TODO
+    public void drawBackgroundPlatform(Graphics g) {
         g.drawImage(background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
     }
 
     public void drawScore(Graphics g) {
-        // TODO
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Arial", Font.BOLD, 28));
+        g.drawString("Score: " + backend.getScore(), 30, 55);
+        g.drawString("High Score: " + backend.getHighScore(), 30, 85);
     }
 
     public void keyTyped(KeyEvent e) {
@@ -54,7 +65,15 @@ public class GameView extends JFrame{
     }
 
     public void drawGameOver(Graphics g) {
-        // TODO
+        // TODO: If time permits, replace instructions window with one designed on Canv
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Arial", Font.BOLD, 52));
+        g.drawString("GAME OVER", 430, 320);
+        g.setFont(new Font("Arial", Font.PLAIN, 28));
+        g.drawString("Press R to restart", 470, 390);
     }
 
     public void paint(Graphics g) {
@@ -74,28 +93,25 @@ public class GameView extends JFrame{
     }
 
     public void myPaint(Graphics g) {
-        // TODO
-
-
-        if (backend.getGameState() == Game.STATE_MAIN_GROUND) {
-            drawBackground(g);
+        if (backend.getGameState() == Game.STATE_INSTR) {
+            drawInstructions(g);
+        } else if (backend.getGameState() == Game.STATE_MAIN_GROUND) {
+            drawBackgroundPlatform(g);
+            drawScore(g);
             // Draw Obstacles
             for (int i = 0; i < backend.getObstacles().size(); i++) {
                 backend.getObstacles().get(i).draw(g);
             }
-
             // Draw acorns
             for (int i = 0; i < backend.getAcorns().size(); i++){
                 backend.getAcorns().get(i).draw(g);
             }
-
             // Draw Player
-            g.setColor(Color.WHITE);
-//            g.fillRect(0,  0, WINDOW_WIDTH, WINDOW_HEIGHT);
             backend.getPlayer().draw(g);
+        } else if (backend.getGameState() == Game.STATE_MAIN_FLYING) {
+            // TODO: Implement flying state
         } else if (backend.getGameState() == Game.STATE_END) {
-            g.setColor(Color.WHITE);
-            g.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+            drawGameOver(g);
         }
 
     }
