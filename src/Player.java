@@ -6,9 +6,11 @@ public class Player {
     private int y;
     private int defaultY;
     private final int WIDTH = 100;
-    private final int HEIGHT = 123;
+    private int HEIGHT = 123;
     private int viewWidth;
     private int viewHeight;
+    private int score;
+    private int highScore;
     private int height;
     private boolean isFlying;
     private Image image;
@@ -39,7 +41,6 @@ public class Player {
     }
 
     public void move() {
-        // TODO
         dY += gravity;
 
         if (dY > terminalVelocity) {
@@ -49,16 +50,17 @@ public class Player {
         y += dY;
 
         // Bring player back down after jump
-        if (y >= defaultY) {
-            y = defaultY;
+        if (y + HEIGHT >= view.getPLATFORMER_HEIGHT()) {
+            y = view.getPLATFORMER_HEIGHT() - HEIGHT;
             dY = 0;
+            isJumping = false;
         }
     }
 
     public void jump() {
         // TODO
         // Jump up
-        if (y >= defaultY) {
+        if (isOnGround()) {
             dY = - 10;
             isJumping = true;
         }
@@ -66,24 +68,24 @@ public class Player {
 
     public void duck() {
         // TODO
-        if (y <= defaultY){
+        if (isOnGround() && !isJumping && !isDucking){
             isDucking = true;
-            height = 25;
-            y = defaultY + 25;
+            HEIGHT = HEIGHT / 2;
+            y = view.getPLATFORMER_HEIGHT() - HEIGHT;
         }
     }
 
     public void stand(){
         if(isDucking){
             isDucking = false;
-            height = 50;
-            y = defaultY;
+            HEIGHT = 123;
+            y = view.getPLATFORMER_HEIGHT()  - HEIGHT;
         }
         isJumping = false;
     }
 
     public Acorn fireAcorn() {
-        return new Acorn(x + WIDTH, y + height / 2);
+        return new Acorn(x + WIDTH, y + HEIGHT / 2);
     }
 
     public Rectangle getBounds() {
@@ -111,7 +113,7 @@ public class Player {
         g.drawImage(image, x, y, WIDTH, HEIGHT, view);
     }
     public boolean isOnGround() {
-        return y + height >= view.getPLATFORMER_HEIGHT();
+        return y + HEIGHT >= view.getPLATFORMER_HEIGHT();
 
     }
 }
