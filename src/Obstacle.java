@@ -10,6 +10,7 @@ public class Obstacle {
     private Image image;
     private int speed;
     private boolean isActive;
+    private boolean isDead;
 
     private GameView view;
 
@@ -25,6 +26,7 @@ public class Obstacle {
         this.y = view.getPLATFORMER_HEIGHT() - HEIGHT;
         this.dx = speed;
         this.dy = 0;
+        isDead = false;
     }
 
     public void move() {
@@ -59,8 +61,11 @@ public class Obstacle {
     }
 
     public void hit() {
-        // TODO
-        return;
+        isDead = true;
+    }
+
+    public boolean isDead() {
+        return isDead;
     }
 
     public void takeDamage() {

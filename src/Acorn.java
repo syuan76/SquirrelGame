@@ -25,6 +25,10 @@ public class Acorn {
     public boolean hasHit(){
         return hasHit;
     }
+
+    public Rectangle getBounds() {
+        return new Rectangle(x, y, width, height);
+    }
     public void fire() {
         x += speed;
     }

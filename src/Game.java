@@ -99,11 +99,12 @@ public class Game implements KeyListener, ActionListener {
         for (int i = 0; i < obstacles.size(); i++) {
             Obstacle o = obstacles.get(i);
             o.move();
-            if (o.isOffScreen()) {
+            if (o.isOffScreen() || o.isDead()) {
                 obstacles.remove(i);
                 // Account for the fact that removing an element would skip over an index
                 i--;
             }
+            checkGameOver();
         }
 
         for (int i = 0; i < projectiles.size(); i++){
@@ -113,8 +114,11 @@ public class Game implements KeyListener, ActionListener {
                 projectiles.remove(i);
                 i--;
             }
+            checkCollisions();
         }
         checkGameOver();
+
+        window.repaint();
     }
 
     // Return player
@@ -183,6 +187,21 @@ public class Game implements KeyListener, ActionListener {
             if (player.getBounds().intersects(o.getBounds())) {
                 return true;
             }
+        }
+
+        // Check acorn collisions
+        for (int i = 0; i < projectiles.size(); i++){
+            Acorn a = projectiles.get(i);
+            for (int j = 0; j < obstacles.size(); j++){
+                Obstacle o = obstacles.get(j);
+                if (a.getBounds().intersects(o.getBounds())){
+                    o.hit();
+                    projectiles.remove(i);
+                    i--;
+                    break;
+                }
+            }
+
         }
         return false;
     }
