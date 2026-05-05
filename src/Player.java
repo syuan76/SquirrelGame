@@ -43,7 +43,6 @@ public class Player {
     public void move() {
         dY += gravity;
 
-
         if (dY > terminalVelocity) {
             dY = terminalVelocity;
         }
