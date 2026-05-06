@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Player {
     private int x;
@@ -16,6 +17,7 @@ public class Player {
     private boolean isCollided;
     private boolean isAlive;
     private boolean isDucking;
+    private int acorns;
 
     private GameView view;
 
@@ -33,6 +35,7 @@ public class Player {
         // TODO: take care of magic numbers
         this.y = defaultY;
         image = new ImageIcon("Resources/Squirrel.png").getImage();
+        acorns = 0;
     }
 
     public void move() {
@@ -87,6 +90,16 @@ public class Player {
         return new Rectangle(x, y, WIDTH, HEIGHT);
     }
 
+    public void addAcorn(){
+        acorns++;
+    }
+    public void subtractAcorn(){
+        acorns--;
+    }
+
+    public int getAcornAmount(){
+        return acorns;
+    }
     public int getX() {
         return x;
     }

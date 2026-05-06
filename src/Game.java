@@ -10,14 +10,17 @@ public class Game implements KeyListener, ActionListener {
     private ArrayList<ObstacleSnake> obstacleSnakes;
     private ArrayList<ObstacleOwl> obstacleOwls;
     private ArrayList<Acorn> projectiles;
+    private ArrayList<AcornToCollect> acorns;
     private int gameState;
     private int score;
     private int scoreTimer;
     private int highScore;
     private static final int SLEEP_TIME = 10;
     private boolean isGameOver;
-    private int obstacleSpawnTimer;;
+    private int obstacleSpawnTimer;
     private int nextObstacleSpawnTime;
+    private int acornSpawnTimer;
+    private int nextAcornSpawnTime;
 
     private GameView window;
 
@@ -35,10 +38,14 @@ public class Game implements KeyListener, ActionListener {
         player = new Player(window);
         obstacleSnakes = new ArrayList<ObstacleSnake>();
         obstacleOwls = new ArrayList<ObstacleOwl>();
+        acorns = new ArrayList<AcornToCollect>();
 
         projectiles = new ArrayList<Acorn>();
         obstacleSpawnTimer = 0;
         nextObstacleSpawnTime = getRandomSpawnTime();
+
+        acornSpawnTimer = 0;
+        nextAcornSpawnTime = getRandomSpawnTime();
 
         Timer clock = new Timer(SLEEP_TIME, this);
         clock.start();
@@ -71,6 +78,8 @@ public class Game implements KeyListener, ActionListener {
     public ArrayList<Acorn> getAcorns() {
         return projectiles;
     }
+
+    public ArrayList<AcornToCollect> getAcornsToCollect(){return acorns;}
 
     public int getRandomSpawnTime() {
         // TODO: have spawn time gradually increase as the game goes on to increase difficulty
@@ -121,6 +130,23 @@ public class Game implements KeyListener, ActionListener {
                 i--;
             }
             checkGameOver();
+        }
+        acornSpawnTimer++;
+        // Spawn acorns to collect
+        if (acornSpawnTimer >= nextAcornSpawnTime){
+            spawnAcorn();
+            acornSpawnTimer = 0;
+            nextAcornSpawnTime = getRandomSpawnTime();
+        }
+
+        // Move acorns
+        for (int i = 0; i < acorns.size(); i++){
+            AcornToCollect a = acorns.get(i);
+            a.move();
+            if(a.isOffScreen() || a.isCollected()){
+                acorns.remove(i);
+                i--;
+            }
         }
     }
 
@@ -197,12 +223,16 @@ public class Game implements KeyListener, ActionListener {
                     break;
 
                 case KeyEvent.VK_SPACE:
-                    projectiles.add(player.fireAcorn());
+                    if (player.getAcornAmount() > 0) {
+                        projectiles.add(player.fireAcorn());
+                        player.subtractAcorn();
+                    }
                     window.repaint();
                     break;
             }
         } else if (gameState == STATE_END) {
             if (e.getKeyCode() == KeyEvent.VK_R) {
+                // NOTE: restartGame() isn't completely done yet
                 restartGame();
             }
         }
@@ -222,7 +252,6 @@ public class Game implements KeyListener, ActionListener {
         // TODO: remove if unused
     }
     public void restartGame() {
-        // TODO: Complete once highScore and score logic implemented
         player = new Player(window);
         obstacleSnakes.clear();
         obstacleOwls.clear();
@@ -231,6 +260,8 @@ public class Game implements KeyListener, ActionListener {
         scoreTimer = 0;
         obstacleSpawnTimer = 0;
         nextObstacleSpawnTime = getRandomSpawnTime();
+        acornSpawnTimer = 0;
+        nextAcornSpawnTime = getRandomSpawnTime();
         gameState = STATE_MAIN_GROUND;
     }
 
@@ -265,6 +296,18 @@ public class Game implements KeyListener, ActionListener {
             }
 
         }
+
+        // Check if Acorn is collected
+        for (int i = 0; i < acorns.size(); i++){
+            AcornToCollect a = acorns.get(i);
+            if (player.getBounds().intersects(a.getBounds())){
+                a.hit();
+                acorns.remove(i);
+                player.addAcorn();
+                i--;
+                break;
+            }
+        }
         return false;
     }
 
@@ -279,6 +322,10 @@ public class Game implements KeyListener, ActionListener {
 
     public void spawnOwl() {
         obstacleOwls.add(new ObstacleOwl(window));
+    }
+
+    public void spawnAcorn(){
+        acorns.add(new AcornToCollect(window));
     }
 
     public void checkGameOver() {

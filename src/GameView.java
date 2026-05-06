@@ -38,6 +38,8 @@ public class GameView extends JFrame{
     }
 
     public void drawInstructions(Graphics g) {
+        // TODO: If time permits, replace instructions window with one designed on Canva
+
         g.drawImage(instructions, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
     }
 
@@ -50,6 +52,24 @@ public class GameView extends JFrame{
         g.setFont(new Font("Arial", Font.BOLD, 28));
         g.drawString("Score: " + backend.getScore(), 30, 55);
         g.drawString("High Score: " + backend.getHighScore(), 30, 85);
+    }
+
+    public void drawAcorns(Graphics g){
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Arial", Font.BOLD, 28));
+        g.drawString("Acorns: " + backend.getPlayer().getAcornAmount(), 1000, 55);
+    }
+
+    public void keyTyped(KeyEvent e) {
+        // TODO
+    }
+
+    public void keyPressed(KeyEvent e) {
+        // TODO
+    }
+
+    public void KeyReleased(KeyEvent e) {
+        // TODO
     }
 
     public void drawGameOver(Graphics g) {
@@ -93,10 +113,18 @@ public class GameView extends JFrame{
             // Draw Owl Obstacles
             for (int i = 0; i < backend.getObstacleOwls().size(); i++) {
                 backend.getObstacleOwls().get(i).draw(g);
+            drawAcorns(g);
+            // Draw Obstacles
+            for (int i = 0; i < backend.getObstacles().size(); i++) {
+                backend.getObstacles().get(i).draw(g);
             }
             // Draw acorns
             for (int i = 0; i < backend.getAcorns().size(); i++){
                 backend.getAcorns().get(i).draw(g);
+            }
+            // Draw acorns to collect
+            for (int i = 0; i < backend.getAcornsToCollect().size(); i++){
+                backend.getAcornsToCollect().get(i).draw(g);
             }
             // Draw Player
             backend.getPlayer().draw(g);
