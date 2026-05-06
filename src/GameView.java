@@ -52,18 +52,6 @@ public class GameView extends JFrame{
         g.drawString("High Score: " + backend.getHighScore(), 30, 85);
     }
 
-    public void keyTyped(KeyEvent e) {
-        // TODO
-    }
-
-    public void keyPressed(KeyEvent e) {
-        // TODO
-    }
-
-    public void KeyReleased(KeyEvent e) {
-        // TODO
-    }
-
     public void drawGameOver(Graphics g) {
         // TODO: If time permits, replace instructions window with one designed on Canv
         g.setColor(Color.WHITE);
@@ -98,9 +86,13 @@ public class GameView extends JFrame{
         } else if (backend.getGameState() == Game.STATE_MAIN_GROUND) {
             drawBackgroundPlatform(g);
             drawScore(g);
-            // Draw Obstacles
-            for (int i = 0; i < backend.getObstacles().size(); i++) {
-                backend.getObstacles().get(i).draw(g);
+            // Draw Snake Obstacles
+            for (int i = 0; i < backend.getObstacleSnakes().size(); i++) {
+                backend.getObstacleSnakes().get(i).draw(g);
+            }
+            // Draw Owl Obstacles
+            for (int i = 0; i < backend.getObstacleOwls().size(); i++) {
+                backend.getObstacleOwls().get(i).draw(g);
             }
             // Draw acorns
             for (int i = 0; i < backend.getAcorns().size(); i++){
@@ -108,8 +100,6 @@ public class GameView extends JFrame{
             }
             // Draw Player
             backend.getPlayer().draw(g);
-        } else if (backend.getGameState() == Game.STATE_MAIN_FLYING) {
-            // TODO: Implement flying state
         } else if (backend.getGameState() == Game.STATE_END) {
             drawGameOver(g);
         }

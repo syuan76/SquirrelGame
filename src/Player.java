@@ -9,9 +9,6 @@ public class Player {
     private int HEIGHT = 123;
     private int viewWidth;
     private int viewHeight;
-    private int score;
-    private int highScore;
-    private int height;
     private boolean isFlying;
     private Image image;
     private double gravity = 0.25;
@@ -28,8 +25,6 @@ public class Player {
 
 
     public Player(GameView view) {
-        // TODO: complete constructor
-
         this.view = view;
         this.viewWidth = view.getWidth();
         this.viewHeight = view.getHeight();
@@ -109,7 +104,6 @@ public class Player {
     }
 
     public void draw(Graphics g) {
-        // TODO
         g.drawImage(image, x, y, WIDTH, HEIGHT, view);
     }
     public boolean isOnGround() {

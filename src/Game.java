@@ -3,12 +3,12 @@ import java.awt.event.KeyEvent;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 public class Game implements KeyListener, ActionListener {
     private Player player;
-    private ArrayList<Obstacle> obstacles;
+    private ArrayList<ObstacleSnake> obstacleSnakes;
+    private ArrayList<ObstacleOwl> obstacleOwls;
     private ArrayList<Acorn> projectiles;
     private int gameState;
     private int score;
@@ -16,15 +16,15 @@ public class Game implements KeyListener, ActionListener {
     private int highScore;
     private static final int SLEEP_TIME = 10;
     private boolean isGameOver;
-    private int obstacleSpawnTimer;
+    private int snakeObstacleSpawnTimer;
+    private int owlObstacleSpawnTimer;
     private int nextObstacleSpawnTime;
 
     private GameView window;
 
     public static final int STATE_INSTR = 0;
     public static final int STATE_MAIN_GROUND = 1;
-    public static final int STATE_MAIN_FLYING = 2;
-    public static final int STATE_END = 3;
+    public static final int STATE_END = 2;
 
     public Game() {
         // TODO: complete constructor
@@ -33,10 +33,12 @@ public class Game implements KeyListener, ActionListener {
         window.addKeyListener(this);
 
         player = new Player(window);
-        obstacles = new ArrayList<Obstacle>();
+        obstacleSnakes = new ArrayList<ObstacleSnake>();
+        obstacleOwls = new ArrayList<ObstacleOwl>();
 
         projectiles = new ArrayList<Acorn>();
-        obstacleSpawnTimer = 0;
+        snakeObstacleSpawnTimer = 0;
+        owlObstacleSpawnTimer = 0;
         nextObstacleSpawnTime = getRandomSpawnTime();
 
         Timer clock = new Timer(SLEEP_TIME, this);
@@ -59,8 +61,12 @@ public class Game implements KeyListener, ActionListener {
         return highScore;
     }
 
-    public ArrayList<Obstacle> getObstacles() {
-        return obstacles;
+    public ArrayList<ObstacleSnake> getObstacleSnakes() {
+        return obstacleSnakes;
+    }
+
+    public ArrayList<ObstacleOwl> getObstacleOwls() {
+        return obstacleOwls;
     }
 
     public ArrayList<Acorn> getAcorns() {
@@ -73,40 +79,45 @@ public class Game implements KeyListener, ActionListener {
         return 100 + (int)(Math.random() * 101);
     }
 
-    public void actionPerformed(ActionEvent e) {
-        if (gameState == STATE_MAIN_GROUND) {
-            actionPerformedGround();
-        } else if (gameState == STATE_MAIN_FLYING) {
-            // TODO: Implement flying state
-        }
-        window.repaint();
-    }
-
-    public void actionPerformedGround() {
-        player.move();
-        scoreTimer++;
-        // Increment score every 0.1 seconds
-        if (scoreTimer >= 10) {
-            score++;
-            scoreTimer = 0;
-        }
-        obstacleSpawnTimer++;
-        if (obstacleSpawnTimer >= nextObstacleSpawnTime) {
+    public void spawnSnakes() {
+        snakeObstacleSpawnTimer++;
+        if (snakeObstacleSpawnTimer >= nextObstacleSpawnTime) {
             spawnObstacle();
-            obstacleSpawnTimer = 0;
+            snakeObstacleSpawnTimer = 0;
             nextObstacleSpawnTime = getRandomSpawnTime();
         }
-        for (int i = 0; i < obstacles.size(); i++) {
-            Obstacle o = obstacles.get(i);
+        for (int i = 0; i < obstacleSnakes.size(); i++) {
+            ObstacleSnake o = obstacleSnakes.get(i);
             o.move();
             if (o.isOffScreen() || o.isDead()) {
-                obstacles.remove(i);
+                obstacleSnakes.remove(i);
                 // Account for the fact that removing an element would skip over an index
                 i--;
             }
             checkGameOver();
         }
+    }
 
+    public void spawnOwls() {
+        owlObstacleSpawnTimer++;
+        if (owlObstacleSpawnTimer >= nextObstacleSpawnTime) {
+            spawnObstacle();
+            owlObstacleSpawnTimer = 0;
+            nextObstacleSpawnTime = getRandomSpawnTime();
+        }
+        for (int i = 0; i < obstacleOwls.size(); i++) {
+            ObstacleOwl o = obstacleOwls.get(i);
+            o.move();
+            if (o.isOffScreen() || o.isDead()) {
+                obstacleOwls.remove(i);
+                // Account for the fact that removing an element would skip over an index
+                i--;
+            }
+            checkGameOver();
+        }
+    }
+
+    public void spawnProjectiles() {
         for (int i = 0; i < projectiles.size(); i++){
             Acorn a = projectiles.get(i);
             a.fire();
@@ -116,6 +127,34 @@ public class Game implements KeyListener, ActionListener {
             }
             checkCollisions();
         }
+    }
+
+    public void incrementScore() {
+        scoreTimer++;
+        // Increment score every 0.1 seconds
+        if (scoreTimer >= 10) {
+            score++;
+            scoreTimer = 0;
+        }
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        // This abstraction will allow us to easily implement other states, such as flying, in the future.
+        if (gameState == STATE_MAIN_GROUND) {
+            actionPerformedGround();
+        }
+        window.repaint();
+    }
+
+    public void actionPerformedGround() {
+        player.move();
+
+        incrementScore();
+
+        spawnSnakes();
+        spawnOwls();
+        spawnProjectiles();
+
         checkGameOver();
 
         window.repaint();
@@ -150,7 +189,6 @@ public class Game implements KeyListener, ActionListener {
             }
         } else if (gameState == STATE_END) {
             if (e.getKeyCode() == KeyEvent.VK_R) {
-                // NOTE: restartGame() isn't completely done yet
                 restartGame();
             }
         }
@@ -172,18 +210,19 @@ public class Game implements KeyListener, ActionListener {
     public void restartGame() {
         // TODO: Complete once highScore and score logic implemented
         player = new Player(window);
-        obstacles.clear();
+        obstacleSnakes.clear();
+        obstacleOwls.clear();
         projectiles.clear();
         score = 0;
         scoreTimer = 0;
-        obstacleSpawnTimer = 0;
+        snakeObstacleSpawnTimer = 0;
         nextObstacleSpawnTime = getRandomSpawnTime();
         gameState = STATE_MAIN_GROUND;
     }
 
     public boolean checkCollisions() {
-        for (int i = 0; i < obstacles.size(); i++) {
-            Obstacle o = obstacles.get(i);
+        for (int i = 0; i < obstacleSnakes.size(); i++) {
+            ObstacleSnake o = obstacleSnakes.get(i);
             if (player.getBounds().intersects(o.getBounds())) {
                 return true;
             }
@@ -192,8 +231,8 @@ public class Game implements KeyListener, ActionListener {
         // Check acorn collisions
         for (int i = 0; i < projectiles.size(); i++){
             Acorn a = projectiles.get(i);
-            for (int j = 0; j < obstacles.size(); j++){
-                Obstacle o = obstacles.get(j);
+            for (int j = 0; j < obstacleSnakes.size(); j++){
+                ObstacleSnake o = obstacleSnakes.get(j);
                 if (a.getBounds().intersects(o.getBounds())){
                     o.hit();
                     projectiles.remove(i);
@@ -212,7 +251,7 @@ public class Game implements KeyListener, ActionListener {
     }
 
     public void spawnObstacle() {
-        obstacles.add(new Obstacle(window));
+        obstacleSnakes.add(new ObstacleSnake(window));
     }
 
     public void checkGameOver() {
