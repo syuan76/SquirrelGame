@@ -21,9 +21,10 @@ public class Game implements KeyListener, ActionListener {
 
     private GameView window;
 
-    public static final int STATE_INSTR = 0;
-    public static final int STATE_MAIN_GROUND = 1;
-    public static final int STATE_END = 2;
+    public static final int STATE_COVER = 0;
+    public static final int STATE_INSTR = 1;
+    public static final int STATE_MAIN_GROUND = 2;
+    public static final int STATE_END = 3;
 
     public Game() {
         // TODO: complete constructor
@@ -173,9 +174,15 @@ public class Game implements KeyListener, ActionListener {
     }
     // Jump button
     public void keyPressed(KeyEvent e){
-        if (gameState == STATE_INSTR) {
+        if (gameState == STATE_COVER) {
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                gameState = STATE_INSTR;
+                window.repaint();
+            }
+        } else if (gameState == STATE_INSTR) {
             if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                 gameState = STATE_MAIN_GROUND;
+                window.repaint();
             }
         } else if (gameState == STATE_MAIN_GROUND) {
             switch (e.getKeyCode()) {
@@ -262,7 +269,7 @@ public class Game implements KeyListener, ActionListener {
     }
 
     public void play() {
-        gameState = STATE_INSTR;
+        gameState = STATE_COVER;
         window.repaint();
     }
 

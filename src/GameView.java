@@ -5,7 +5,10 @@ import java.awt.image.BufferStrategy;
 
 public class GameView extends JFrame{
     private Game backend;
+    private Image coverImage;
+    private Image instructions;
     private Image background;
+    private Image gameOver;
     private final int WINDOW_WIDTH = 1200;
     private final int WINDOW_HEIGHT = 800;
     private final int PLATFORMER_HEIGHT = 670;
@@ -14,10 +17,13 @@ public class GameView extends JFrame{
         // TODO: complete constructor
         this.backend = backend;
 
+        this.coverImage = new ImageIcon("Resources/CoverImage.png").getImage();
+        this.instructions = new ImageIcon("Resources/Instructions.png").getImage();
         this.background = new ImageIcon("Resources/PlatformerBackground.jpg").getImage();
+        this.gameOver = new ImageIcon("Resources/GameOver.png").getImage();
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setTitle("SQUIRREL GAME");
+        this.setTitle("SQUIRREL RUN");
         this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         this.setVisible(true);
         createBufferStrategy(2);
@@ -27,18 +33,12 @@ public class GameView extends JFrame{
         return PLATFORMER_HEIGHT;
     }
 
+    public void drawCoverImage(Graphics g) {
+        g.drawImage(coverImage, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
+    }
+
     public void drawInstructions(Graphics g) {
-        // TODO: If time permits, replace instructions window with one designed on Canva
-        g.setColor(Color.WHITE);
-        g.fillRect(0, 0 , WINDOW_WIDTH, WINDOW_HEIGHT);
-        g.setColor(Color.BLACK);
-        g.setFont(new Font("Arial", Font.BOLD, 48));
-        g.drawString("SQUIRREL GAME", 400, 250);
-        g.setFont(new Font("Arial", Font.PLAIN, 28));
-        g.drawString("Press ENTER to start", 450, 350);
-        g.drawString("UP = jump", 500, 400);
-        g.drawString("DOWN = duck", 500, 440);
-        g.drawString("SPACE = fire acorn", 500, 480);
+        g.drawImage(instructions, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
     }
 
     public void drawBackgroundPlatform(Graphics g) {
@@ -53,15 +53,13 @@ public class GameView extends JFrame{
     }
 
     public void drawGameOver(Graphics g) {
-        // TODO: If time permits, replace instructions window with one designed on Canv
-        g.setColor(Color.WHITE);
-        g.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-
+        g.drawImage(gameOver, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
         g.setColor(Color.BLACK);
-        g.setFont(new Font("Arial", Font.BOLD, 52));
-        g.drawString("GAME OVER", 430, 320);
-        g.setFont(new Font("Arial", Font.PLAIN, 28));
-        g.drawString("Press R to restart", 470, 390);
+        g.setFont(new Font("Arial", Font.BOLD, 50));
+        // Draws the score in the "SCORE: " slot of the gameOver image
+        g.drawString("" + backend.getScore(), 650, 372);
+        // Draws the high score in the "HIGH SCORE: " slot of the gameOver image
+        g.drawString("" + backend.getHighScore(), 650, 470);
     }
 
     public void paint(Graphics g) {
@@ -81,7 +79,9 @@ public class GameView extends JFrame{
     }
 
     public void myPaint(Graphics g) {
-        if (backend.getGameState() == Game.STATE_INSTR) {
+        if (backend.getGameState() == Game.STATE_COVER) {
+            drawCoverImage(g);
+        } else if (backend.getGameState() == Game.STATE_INSTR) {
             drawInstructions(g);
         } else if (backend.getGameState() == Game.STATE_MAIN_GROUND) {
             drawBackgroundPlatform(g);
