@@ -113,11 +113,8 @@ public class GameView extends JFrame{
             // Draw Owl Obstacles
             for (int i = 0; i < backend.getObstacleOwls().size(); i++) {
                 backend.getObstacleOwls().get(i).draw(g);
-            drawAcorns(g);
-            // Draw Obstacles
-            for (int i = 0; i < backend.getObstacles().size(); i++) {
-                backend.getObstacles().get(i).draw(g);
             }
+            drawAcorns(g);
             // Draw acorns
             for (int i = 0; i < backend.getAcorns().size(); i++){
                 backend.getAcorns().get(i).draw(g);
