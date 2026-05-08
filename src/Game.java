@@ -16,8 +16,7 @@ public class Game implements KeyListener, ActionListener {
     private int highScore;
     private static final int SLEEP_TIME = 10;
     private boolean isGameOver;
-    private int snakeObstacleSpawnTimer;
-    private int owlObstacleSpawnTimer;
+    private int obstacleSpawnTimer;;
     private int nextObstacleSpawnTime;
 
     private GameView window;
@@ -37,8 +36,7 @@ public class Game implements KeyListener, ActionListener {
         obstacleOwls = new ArrayList<ObstacleOwl>();
 
         projectiles = new ArrayList<Acorn>();
-        snakeObstacleSpawnTimer = 0;
-        owlObstacleSpawnTimer = 0;
+        obstacleSpawnTimer = 0;
         nextObstacleSpawnTime = getRandomSpawnTime();
 
         Timer clock = new Timer(SLEEP_TIME, this);
@@ -79,13 +77,28 @@ public class Game implements KeyListener, ActionListener {
         return 100 + (int)(Math.random() * 101);
     }
 
-    public void spawnSnakes() {
-        snakeObstacleSpawnTimer++;
-        if (snakeObstacleSpawnTimer >= nextObstacleSpawnTime) {
-            spawnObstacle();
-            snakeObstacleSpawnTimer = 0;
+    public void spawnObstacles() {
+        obstacleSpawnTimer++;
+
+        if (obstacleSpawnTimer >= nextObstacleSpawnTime) {
+            if (score < 50) {
+                spawnSnake();
+            } else if (score < 100) {
+                spawnOwl();
+            } else {
+                int random = (int)(Math.random()*2);
+                if (random == 0) {
+                    spawnSnake();
+                } else {
+                    spawnOwl();
+                }
+            }
+            obstacleSpawnTimer = 0;
             nextObstacleSpawnTime = getRandomSpawnTime();
         }
+    }
+
+    public void moveSnakes() {
         for (int i = 0; i < obstacleSnakes.size(); i++) {
             ObstacleSnake o = obstacleSnakes.get(i);
             o.move();
@@ -94,17 +107,10 @@ public class Game implements KeyListener, ActionListener {
                 // Account for the fact that removing an element would skip over an index
                 i--;
             }
-            checkGameOver();
         }
     }
 
-    public void spawnOwls() {
-        owlObstacleSpawnTimer++;
-        if (owlObstacleSpawnTimer >= nextObstacleSpawnTime) {
-            spawnObstacle();
-            owlObstacleSpawnTimer = 0;
-            nextObstacleSpawnTime = getRandomSpawnTime();
-        }
+    public void moveOwls() {
         for (int i = 0; i < obstacleOwls.size(); i++) {
             ObstacleOwl o = obstacleOwls.get(i);
             o.move();
@@ -151,8 +157,9 @@ public class Game implements KeyListener, ActionListener {
 
         incrementScore();
 
-        spawnSnakes();
-        spawnOwls();
+        spawnObstacles();
+        moveSnakes();
+        moveOwls();
         spawnProjectiles();
 
         checkGameOver();
@@ -215,14 +222,23 @@ public class Game implements KeyListener, ActionListener {
         projectiles.clear();
         score = 0;
         scoreTimer = 0;
-        snakeObstacleSpawnTimer = 0;
+        obstacleSpawnTimer = 0;
         nextObstacleSpawnTime = getRandomSpawnTime();
         gameState = STATE_MAIN_GROUND;
     }
 
     public boolean checkCollisions() {
+        // Check snake collisions
         for (int i = 0; i < obstacleSnakes.size(); i++) {
             ObstacleSnake o = obstacleSnakes.get(i);
+            if (player.getBounds().intersects(o.getBounds())) {
+                return true;
+            }
+        }
+
+        // Check owl collisions
+        for (int i = 0; i < obstacleOwls.size(); i++) {
+            ObstacleOwl o = obstacleOwls.get(i);
             if (player.getBounds().intersects(o.getBounds())) {
                 return true;
             }
@@ -250,8 +266,12 @@ public class Game implements KeyListener, ActionListener {
         window.repaint();
     }
 
-    public void spawnObstacle() {
+    public void spawnSnake() {
         obstacleSnakes.add(new ObstacleSnake(window));
+    }
+
+    public void spawnOwl() {
+        obstacleOwls.add(new ObstacleOwl(window));
     }
 
     public void checkGameOver() {
