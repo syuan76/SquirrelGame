@@ -268,9 +268,7 @@ public class Game implements KeyListener, ActionListener {
         // Check for collisions between the squirrel and the obstacles
         for (int i = 0; i < obstacles.size(); i++) {
             Obstacle o = obstacles.get(i);
-            if (player.getBounds().intersects(o.getBounds())) {
-                return true;
-            }
+            return player.getBounds().intersects(o.getBounds());
         }
 
         // Check for collisions between the projectile and the obstacles
