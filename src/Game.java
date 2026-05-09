@@ -28,6 +28,7 @@ public class Game implements KeyListener, ActionListener {
     public static final int STATE_END = 3;
 
     public Game() {
+        // TODO: complete constructor
         window = new GameView(this);
         window.addKeyListener(this);
 
@@ -120,19 +121,6 @@ public class Game implements KeyListener, ActionListener {
                 // Account for the fact that removing an element would skip over an index
                 i--;
             }
-        }
-    }
-
-    public void moveOwls() {
-        for (int i = 0; i < obstacleOwls.size(); i++) {
-            ObstacleOwl o = obstacleOwls.get(i);
-            o.move();
-            if (o.isOffScreen() || o.isDead()) {
-                obstacleOwls.remove(i);
-                // Account for the fact that removing an element would skip over an index
-                i--;
-            }
-            checkGameOver();
         }
     }
 
@@ -260,10 +248,8 @@ public class Game implements KeyListener, ActionListener {
     }
 
     public void keyTyped(KeyEvent e){
-        // Unused, but required because Game implements KeyListener
+        // TODO: remove if unused
     }
-
-    // Reset and clear variables
     public void restartGame() {
         player = new Player(window);
         obstacles.clear();
