@@ -253,9 +253,7 @@ public class Game implements KeyListener, ActionListener {
     public boolean checkCollisions() {
         for (int i = 0; i < obstacles.size(); i++) {
             Obstacle o = obstacles.get(i);
-            if (player.getBounds().intersects(o.getBounds())) {
-                return true;
-            }
+            return player.getBounds().intersects(o.getBounds());
         }
 
         // Check acorn collisions

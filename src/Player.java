@@ -4,9 +4,9 @@ import java.awt.*;
 public class Player {
     private int x;
     private int y;
-    private int defaultY;
     private final int WIDTH = 100;
-    private int HEIGHT = 123;
+    private int height;
+    private final int STANDING_HEIGHT = 123;
     private int viewWidth;
     private int viewHeight;
     private Image image;
@@ -24,12 +24,12 @@ public class Player {
 
     public Player(GameView view) {
         this.view = view;
+        height = STANDING_HEIGHT;
         this.viewWidth = view.getWidth();
         this.viewHeight = view.getHeight();
-        defaultY = view.getPLATFORMER_HEIGHT() - HEIGHT;
         this.x = viewWidth / 2;
         // TODO: take care of magic numbers
-        this.y = defaultY;
+        this.y = view.getPLATFORMER_HEIGHT() - height;
         image = new ImageIcon("Resources/Squirrel.png").getImage();
         acorns = 0;
     }
@@ -44,8 +44,8 @@ public class Player {
         y += dY;
 
         // Bring player back down after jump
-        if (y + HEIGHT >= view.getPLATFORMER_HEIGHT()) {
-            y = view.getPLATFORMER_HEIGHT() - HEIGHT;
+        if (y + height >= view.getPLATFORMER_HEIGHT()) {
+            y = view.getPLATFORMER_HEIGHT() - height;
             dY = 0;
             isJumping = false;
         }
@@ -62,26 +62,26 @@ public class Player {
     public void duck() {
         if (isOnGround() && !isJumping && !isDucking){
             isDucking = true;
-            HEIGHT = HEIGHT / 2;
-            y = view.getPLATFORMER_HEIGHT() - HEIGHT;
+            height = height / 2;
+            y = view.getPLATFORMER_HEIGHT() - height;
         }
     }
 
     public void stand(){
-        if(isDucking){
+        if (isDucking) {
             isDucking = false;
-            HEIGHT = 123;
-            y = view.getPLATFORMER_HEIGHT()  - HEIGHT;
+            height = STANDING_HEIGHT;
+            y = view.getPLATFORMER_HEIGHT()  - height;
         }
         isJumping = false;
     }
 
     public Acorn fireAcorn() {
-        return new Acorn(x + WIDTH, y + HEIGHT / 2);
+        return new Acorn(x + WIDTH, y + height / 2);
     }
 
     public Rectangle getBounds() {
-        return new Rectangle(x, y, WIDTH, HEIGHT);
+        return new Rectangle(x, y, WIDTH, height);
     }
 
     public void addAcorn(){
@@ -106,15 +106,15 @@ public class Player {
         return WIDTH;
     }
 
-    public int getHEIGHT() {
-        return HEIGHT;
+    public int getHeight() {
+        return height;
     }
 
     public void draw(Graphics g) {
-        g.drawImage(image, x, y, WIDTH, HEIGHT, view);
+        g.drawImage(image, x, y, WIDTH, height, view);
     }
     public boolean isOnGround() {
-        return y + HEIGHT >= view.getPLATFORMER_HEIGHT();
+        return y + height >= view.getPLATFORMER_HEIGHT();
 
     }
 }
