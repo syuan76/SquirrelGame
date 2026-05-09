@@ -42,10 +42,10 @@ public class Game implements KeyListener, ActionListener {
 
         projectiles = new ArrayList<Acorn>();
         obstacleSpawnTimer = 0;
-        nextObstacleSpawnTime = getRandomSpawnTime();
+        nextObstacleSpawnTime = getRandomObstacleSpawnTime();
 
         acornSpawnTimer = 0;
-        nextAcornSpawnTime = getRandomSpawnTime();
+        nextAcornSpawnTime = getRandomAcornSpawnTime();
 
         Timer clock = new Timer(SLEEP_TIME, this);
         clock.start();
@@ -81,10 +81,15 @@ public class Game implements KeyListener, ActionListener {
 
     public ArrayList<AcornToCollect> getAcornsToCollect(){return acorns;}
 
-    public int getRandomSpawnTime() {
+    public int getRandomObstacleSpawnTime() {
         // TODO: have spawn time gradually increase as the game goes on to increase difficulty
         // Obstacle spawns every 1 to 2 seconds randomly
         return 100 + (int)(Math.random() * 101);
+    }
+
+    public int getRandomAcornSpawnTime() {
+        // Acorn spawns every 4 to 7 seconds randomly. Less frequent than obstacles, since acorns shouldn't be so easy to collect.
+        return 400 + (int)(Math.random() * 301);
     }
 
     public void spawnObstacles() {
@@ -104,7 +109,7 @@ public class Game implements KeyListener, ActionListener {
                 }
             }
             obstacleSpawnTimer = 0;
-            nextObstacleSpawnTime = getRandomSpawnTime();
+            nextObstacleSpawnTime = getRandomObstacleSpawnTime();
         }
     }
 
@@ -131,12 +136,15 @@ public class Game implements KeyListener, ActionListener {
             }
             checkGameOver();
         }
+    }
+
+    public void spawnCollectibleAcorns() {
         acornSpawnTimer++;
         // Spawn acorns to collect
         if (acornSpawnTimer >= nextAcornSpawnTime){
             spawnAcorn();
             acornSpawnTimer = 0;
-            nextAcornSpawnTime = getRandomSpawnTime();
+            nextAcornSpawnTime = getRandomAcornSpawnTime();
         }
 
         // Move acorns
@@ -188,6 +196,7 @@ public class Game implements KeyListener, ActionListener {
         moveSnakes();
         moveOwls();
         spawnProjectiles();
+        spawnCollectibleAcorns();
 
         checkGameOver();
 
@@ -256,12 +265,13 @@ public class Game implements KeyListener, ActionListener {
         obstacleSnakes.clear();
         obstacleOwls.clear();
         projectiles.clear();
+        acorns.clear();
         score = 0;
         scoreTimer = 0;
         obstacleSpawnTimer = 0;
-        nextObstacleSpawnTime = getRandomSpawnTime();
+        nextObstacleSpawnTime = getRandomObstacleSpawnTime();
         acornSpawnTimer = 0;
-        nextAcornSpawnTime = getRandomSpawnTime();
+        nextAcornSpawnTime = getRandomAcornSpawnTime();
         gameState = STATE_MAIN_GROUND;
     }
 
