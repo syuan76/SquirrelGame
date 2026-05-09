@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class Player {
     private int x;
@@ -10,12 +9,9 @@ public class Player {
     private int HEIGHT = 123;
     private int viewWidth;
     private int viewHeight;
-    private boolean isFlying;
     private Image image;
     private double gravity = 0.25;
     private boolean isJumping;
-    private boolean isCollided;
-    private boolean isAlive;
     private boolean isDucking;
     private int acorns;
 
@@ -56,7 +52,6 @@ public class Player {
     }
 
     public void jump() {
-        // TODO
         // Jump up
         if (isOnGround()) {
             dY = - 10;
@@ -65,7 +60,6 @@ public class Player {
     }
 
     public void duck() {
-        // TODO
         if (isOnGround() && !isJumping && !isDucking){
             isDucking = true;
             HEIGHT = HEIGHT / 2;

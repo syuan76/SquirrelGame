@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 
 public class GameView extends JFrame{
@@ -14,7 +13,6 @@ public class GameView extends JFrame{
     private final int PLATFORMER_HEIGHT = 670;
 
     public GameView(Game backend) {
-        // TODO: complete constructor
         this.backend = backend;
 
         this.coverImage = new ImageIcon("Resources/CoverImage.png").getImage();
@@ -38,8 +36,6 @@ public class GameView extends JFrame{
     }
 
     public void drawInstructions(Graphics g) {
-        // TODO: If time permits, replace instructions window with one designed on Canva
-
         g.drawImage(instructions, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
     }
 
@@ -58,18 +54,6 @@ public class GameView extends JFrame{
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 28));
         g.drawString("Acorns: " + backend.getPlayer().getAcornAmount(), 1000, 55);
-    }
-
-    public void keyTyped(KeyEvent e) {
-        // TODO
-    }
-
-    public void keyPressed(KeyEvent e) {
-        // TODO
-    }
-
-    public void KeyReleased(KeyEvent e) {
-        // TODO
     }
 
     public void drawGameOver(Graphics g) {
@@ -106,13 +90,9 @@ public class GameView extends JFrame{
         } else if (backend.getGameState() == Game.STATE_MAIN_GROUND) {
             drawBackgroundPlatform(g);
             drawScore(g);
-            // Draw Snake Obstacles
-            for (int i = 0; i < backend.getObstacleSnakes().size(); i++) {
-                backend.getObstacleSnakes().get(i).draw(g);
-            }
-            // Draw Owl Obstacles
-            for (int i = 0; i < backend.getObstacleOwls().size(); i++) {
-                backend.getObstacleOwls().get(i).draw(g);
+            // Draw Obstacles
+            for (int i = 0; i < backend.getObstacles().size(); i++) {
+                backend.getObstacles().get(i).draw(g);
             }
             drawAcorns(g);
             // Draw acorns

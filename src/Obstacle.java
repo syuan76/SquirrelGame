@@ -1,42 +1,39 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class ObstacleOwl {
+public class Obstacle {
     private int x, y, dx, dy;
-    private final int WIDTH = 100;
-    private final int HEIGHT = 75;
+    private int width;
+    private int height;
     private int viewWidth;
     private int viewHeight;
     private Image image;
-    private int speed;
-    private boolean isActive;
     private boolean isDead;
 
     private GameView view;
 
-    public ObstacleOwl(GameView view) {
-        // TODO: complete constructor
-        this.image = new ImageIcon("Resources/Owl.png").getImage();
+    public Obstacle(GameView view, String imageName, int width, int height, int y) {
+        this.image = new ImageIcon(imageName).getImage();
         this.view = view;
+        this.width = width;
+        this.height = height;
         this.viewWidth = view.getWidth();
         this.viewHeight = view.getHeight();
-        this.speed = 5;
 
         this.x = viewWidth;
-        this.y = view.getPLATFORMER_HEIGHT() - HEIGHT * 2;
-        this.dx = speed;
+        this.y = y;
+        this.dx = 5;
         this.dy = 0;
         isDead = false;
     }
 
     public void move() {
-        // TODO
         x -= dx;
         y += dy;
     }
 
     public Rectangle getBounds() {
-        return new Rectangle(x, y, WIDTH, HEIGHT);
+        return new Rectangle(x, y, width, height);
     }
 
     public int getX() {
@@ -47,17 +44,12 @@ public class ObstacleOwl {
         return y;
     }
 
-    public int getWIDTH() {
-        return WIDTH;
+    public int getWidth() {
+        return width;
     }
 
-    public int getHEIGHT() {
-        return HEIGHT;
-    }
-
-    public boolean collides() {
-        // TODO
-        return false;
+    public int getHeight() {
+        return height;
     }
 
     public void hit() {
@@ -68,16 +60,12 @@ public class ObstacleOwl {
         return isDead;
     }
 
-    public void takeDamage() {
-        // TODO
-        return;
-    }
 
     public void draw(Graphics g) {
-        g.drawImage(image, x, y, WIDTH, HEIGHT, view);
+        g.drawImage(image, x, y, width, height, view);
     }
 
     public boolean isOffScreen() {
-        return x + WIDTH < 0;
+        return x + width < 0;
     }
 }

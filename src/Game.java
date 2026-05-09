@@ -7,8 +7,7 @@ import java.util.ArrayList;
 
 public class Game implements KeyListener, ActionListener {
     private Player player;
-    private ArrayList<ObstacleSnake> obstacleSnakes;
-    private ArrayList<ObstacleOwl> obstacleOwls;
+    private ArrayList<Obstacle> obstacles;
     private ArrayList<Acorn> projectiles;
     private ArrayList<AcornToCollect> acorns;
     private int gameState;
@@ -16,7 +15,6 @@ public class Game implements KeyListener, ActionListener {
     private int scoreTimer;
     private int highScore;
     private static final int SLEEP_TIME = 10;
-    private boolean isGameOver;
     private int obstacleSpawnTimer;
     private int nextObstacleSpawnTime;
     private int acornSpawnTimer;
@@ -31,13 +29,11 @@ public class Game implements KeyListener, ActionListener {
 
     public Game() {
         // TODO: complete constructor
-        isGameOver = false;
         window = new GameView(this);
         window.addKeyListener(this);
 
         player = new Player(window);
-        obstacleSnakes = new ArrayList<ObstacleSnake>();
-        obstacleOwls = new ArrayList<ObstacleOwl>();
+        obstacles = new ArrayList<Obstacle>();
         acorns = new ArrayList<AcornToCollect>();
 
         projectiles = new ArrayList<Acorn>();
@@ -67,12 +63,8 @@ public class Game implements KeyListener, ActionListener {
         return highScore;
     }
 
-    public ArrayList<ObstacleSnake> getObstacleSnakes() {
-        return obstacleSnakes;
-    }
-
-    public ArrayList<ObstacleOwl> getObstacleOwls() {
-        return obstacleOwls;
+    public ArrayList<Obstacle> getObstacles() {
+        return obstacles;
     }
 
     public ArrayList<Acorn> getAcorns() {
@@ -82,7 +74,6 @@ public class Game implements KeyListener, ActionListener {
     public ArrayList<AcornToCollect> getAcornsToCollect(){return acorns;}
 
     public int getRandomObstacleSpawnTime() {
-        // TODO: have spawn time gradually increase as the game goes on to increase difficulty
         // Obstacle spawns every 1 to 2 seconds randomly
         return 100 + (int)(Math.random() * 101);
     }
@@ -113,28 +104,15 @@ public class Game implements KeyListener, ActionListener {
         }
     }
 
-    public void moveSnakes() {
-        for (int i = 0; i < obstacleSnakes.size(); i++) {
-            ObstacleSnake o = obstacleSnakes.get(i);
+    public void moveObstacles() {
+        for (int i = 0; i < obstacles.size(); i++) {
+            Obstacle o = obstacles.get(i);
             o.move();
             if (o.isOffScreen() || o.isDead()) {
-                obstacleSnakes.remove(i);
+                obstacles.remove(i);
                 // Account for the fact that removing an element would skip over an index
                 i--;
             }
-        }
-    }
-
-    public void moveOwls() {
-        for (int i = 0; i < obstacleOwls.size(); i++) {
-            ObstacleOwl o = obstacleOwls.get(i);
-            o.move();
-            if (o.isOffScreen() || o.isDead()) {
-                obstacleOwls.remove(i);
-                // Account for the fact that removing an element would skip over an index
-                i--;
-            }
-            checkGameOver();
         }
     }
 
@@ -158,7 +136,7 @@ public class Game implements KeyListener, ActionListener {
         }
     }
 
-    public void spawnProjectiles() {
+    public void moveProjectiles() {
         for (int i = 0; i < projectiles.size(); i++){
             Acorn a = projectiles.get(i);
             a.fire();
@@ -166,7 +144,6 @@ public class Game implements KeyListener, ActionListener {
                 projectiles.remove(i);
                 i--;
             }
-            checkCollisions();
         }
     }
 
@@ -193,9 +170,8 @@ public class Game implements KeyListener, ActionListener {
         incrementScore();
 
         spawnObstacles();
-        moveSnakes();
-        moveOwls();
-        spawnProjectiles();
+        moveObstacles();
+        moveProjectiles();
         spawnCollectibleAcorns();
 
         checkGameOver();
@@ -258,12 +234,11 @@ public class Game implements KeyListener, ActionListener {
     }
 
     public void keyTyped(KeyEvent e){
-        // TODO: remove if unused
+        // Unused, but required because Game implements KeyListener
     }
     public void restartGame() {
         player = new Player(window);
-        obstacleSnakes.clear();
-        obstacleOwls.clear();
+        obstacles.clear();
         projectiles.clear();
         acorns.clear();
         score = 0;
@@ -276,17 +251,8 @@ public class Game implements KeyListener, ActionListener {
     }
 
     public boolean checkCollisions() {
-        // Check snake collisions
-        for (int i = 0; i < obstacleSnakes.size(); i++) {
-            ObstacleSnake o = obstacleSnakes.get(i);
-            if (player.getBounds().intersects(o.getBounds())) {
-                return true;
-            }
-        }
-
-        // Check owl collisions
-        for (int i = 0; i < obstacleOwls.size(); i++) {
-            ObstacleOwl o = obstacleOwls.get(i);
+        for (int i = 0; i < obstacles.size(); i++) {
+            Obstacle o = obstacles.get(i);
             if (player.getBounds().intersects(o.getBounds())) {
                 return true;
             }
@@ -295,8 +261,8 @@ public class Game implements KeyListener, ActionListener {
         // Check acorn collisions
         for (int i = 0; i < projectiles.size(); i++){
             Acorn a = projectiles.get(i);
-            for (int j = 0; j < obstacleSnakes.size(); j++){
-                ObstacleSnake o = obstacleSnakes.get(j);
+            for (int j = 0; j < obstacles.size(); j++){
+                Obstacle o = obstacles.get(j);
                 if (a.getBounds().intersects(o.getBounds())){
                     o.hit();
                     projectiles.remove(i);
@@ -327,11 +293,11 @@ public class Game implements KeyListener, ActionListener {
     }
 
     public void spawnSnake() {
-        obstacleSnakes.add(new ObstacleSnake(window));
+        obstacles.add(new Obstacle(window, "Resources/Snake.png", 75, 100, window.getPLATFORMER_HEIGHT() - 100));
     }
 
     public void spawnOwl() {
-        obstacleOwls.add(new ObstacleOwl(window));
+        obstacles.add(new Obstacle(window, "Resources/Owl.png", 100, 75, window.getPLATFORMER_HEIGHT() - 150));
     }
 
     public void spawnAcorn(){
