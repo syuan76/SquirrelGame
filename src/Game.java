@@ -39,7 +39,7 @@ public class Game implements KeyListener, ActionListener {
         // Projectiles are the acorns that the squirrel shoots
         projectiles = new ArrayList<Acorn>();
         obstacleSpawnTimer = 0;
-        nextObstacleSpawnTime = getRandomObstacleSpawnTime();
+        nextObstacleSpawnTime = getRandomSpawnTime();
 
         acornSpawnTimer = 0;
         nextAcornSpawnTime = getRandomAcornSpawnTime();
@@ -123,7 +123,19 @@ public class Game implements KeyListener, ActionListener {
         }
     }
 
-    // Spawn acorns to collect
+    public void moveOwls() {
+        for (int i = 0; i < obstacleOwls.size(); i++) {
+            ObstacleOwl o = obstacleOwls.get(i);
+            o.move();
+            if (o.isOffScreen() || o.isDead()) {
+                obstacleOwls.remove(i);
+                // Account for the fact that removing an element would skip over an index
+                i--;
+            }
+            checkGameOver();
+        }
+    }
+
     public void spawnCollectibleAcorns() {
         acornSpawnTimer++;
         if (acornSpawnTimer >= nextAcornSpawnTime){
@@ -266,7 +278,6 @@ public class Game implements KeyListener, ActionListener {
         gameState = STATE_MAIN_GROUND;
     }
 
-    // Check for collisions between objects
     public boolean checkCollisions() {
         // Check for collisions between the squirrel and the obstacles
         for (int i = 0; i < obstacles.size(); i++) {
