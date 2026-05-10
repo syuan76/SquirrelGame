@@ -10,16 +10,16 @@ public class Player {
     private int viewWidth;
     private int viewHeight;
     private Image image;
-    private double gravity = 0.25;
+    private final double GRAVITY = 0.25;
     private boolean isJumping;
     private boolean isDucking;
-    private int acorns;
+    private int numAcorns;
 
     private GameView view;
 
     // Variables for gravity
-    private double dY = 0.0;
-    private double terminalVelocity = 400.0;
+    private double dY;
+    private final double TERMINAL_VELOCITY = 400.0;
 
 
     public Player(GameView view) {
@@ -31,14 +31,15 @@ public class Player {
         // TODO: take care of magic numbers
         this.y = view.getPLATFORMER_HEIGHT() - height;
         image = new ImageIcon("Resources/Squirrel.png").getImage();
-        acorns = 0;
+        numAcorns = 0;
+        dY = 0.0;
     }
 
     public void move() {
-        dY += gravity;
+        dY += GRAVITY;
 
-        if (dY > terminalVelocity) {
-            dY = terminalVelocity;
+        if (dY > TERMINAL_VELOCITY) {
+            dY = TERMINAL_VELOCITY;
         }
 
         y += dY;
@@ -85,14 +86,14 @@ public class Player {
     }
 
     public void addAcorn(){
-        acorns++;
+        numAcorns++;
     }
     public void subtractAcorn(){
-        acorns--;
+        numAcorns--;
     }
 
     public int getAcornAmount(){
-        return acorns;
+        return numAcorns;
     }
     public int getX() {
         return x;

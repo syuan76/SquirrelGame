@@ -43,6 +43,7 @@ public class GameView extends JFrame{
         g.drawImage(background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
     }
 
+    // During gameplay, draws Score and High Score in the top left hand corner of the window.
     public void drawScore(Graphics g) {
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 28));
@@ -50,7 +51,8 @@ public class GameView extends JFrame{
         g.drawString("High Score: " + backend.getHighScore(), 30, 85);
     }
 
-    public void drawAcorns(Graphics g){
+    // During gameplay, draws the amount of acorns the squirrel currently has in the top right hand corner of the window.
+    public void drawAcornAmount(Graphics g){
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 28));
         g.drawString("Acorns: " + backend.getPlayer().getAcornAmount(), 1000, 55);
@@ -89,20 +91,26 @@ public class GameView extends JFrame{
             drawInstructions(g);
         } else if (backend.getGameState() == Game.STATE_MAIN_GROUND) {
             drawBackgroundPlatform(g);
+
             drawScore(g);
+
             // Draw Obstacles
             for (int i = 0; i < backend.getObstacles().size(); i++) {
                 backend.getObstacles().get(i).draw(g);
             }
-            drawAcorns(g);
+
+            drawAcornAmount(g);
+
             // Draw acorns
             for (int i = 0; i < backend.getAcorns().size(); i++){
                 backend.getAcorns().get(i).draw(g);
             }
+
             // Draw acorns to collect
             for (int i = 0; i < backend.getAcornsToCollect().size(); i++){
                 backend.getAcornsToCollect().get(i).draw(g);
             }
+
             // Draw Player
             backend.getPlayer().draw(g);
         } else if (backend.getGameState() == Game.STATE_END) {
