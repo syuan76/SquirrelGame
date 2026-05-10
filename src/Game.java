@@ -28,7 +28,6 @@ public class Game implements KeyListener, ActionListener {
     public static final int STATE_END = 3;
 
     public Game() {
-        // TODO: complete constructor
         window = new GameView(this);
         window.addKeyListener(this);
 
@@ -124,6 +123,7 @@ public class Game implements KeyListener, ActionListener {
         }
     }
 
+    // Spawn acorns to collect
     public void spawnCollectibleAcorns() {
         acornSpawnTimer++;
         if (acornSpawnTimer >= nextAcornSpawnTime){
@@ -250,6 +250,8 @@ public class Game implements KeyListener, ActionListener {
     public void keyTyped(KeyEvent e){
         // TODO: remove if unused
     }
+
+    // Reset and clear variables
     public void restartGame() {
         player = new Player(window);
         obstacles.clear();
@@ -264,11 +266,14 @@ public class Game implements KeyListener, ActionListener {
         gameState = STATE_MAIN_GROUND;
     }
 
+    // Check for collisions between objects
     public boolean checkCollisions() {
         // Check for collisions between the squirrel and the obstacles
         for (int i = 0; i < obstacles.size(); i++) {
             Obstacle o = obstacles.get(i);
-            return player.getBounds().intersects(o.getBounds());
+            if (player.getBounds().intersects(o.getBounds())) {
+                return true;
+            }
         }
 
         // Check for collisions between the projectile and the obstacles
