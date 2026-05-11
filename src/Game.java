@@ -7,16 +7,14 @@ import java.util.ArrayList;
 
 public class Game implements KeyListener, ActionListener {
     private Player player;
-    private ArrayList<ObstacleSnake> obstacleSnakes;
-    private ArrayList<ObstacleOwl> obstacleOwls;
+    private ArrayList<Obstacle> obstacles;
     private ArrayList<Acorn> projectiles;
-    private ArrayList<AcornToCollect> acorns;
+    private ArrayList<AcornToCollect> collectibleAcorns;
     private int gameState;
     private int score;
     private int scoreTimer;
     private int highScore;
     private static final int SLEEP_TIME = 10;
-    private boolean isGameOver;
     private int obstacleSpawnTimer;
     private int nextObstacleSpawnTime;
     private int acornSpawnTimer;
@@ -30,22 +28,21 @@ public class Game implements KeyListener, ActionListener {
     public static final int STATE_END = 3;
 
     public Game() {
-        // TODO: complete constructor
-        isGameOver = false;
         window = new GameView(this);
         window.addKeyListener(this);
 
         player = new Player(window);
-        obstacleSnakes = new ArrayList<ObstacleSnake>();
-        obstacleOwls = new ArrayList<ObstacleOwl>();
-        acorns = new ArrayList<AcornToCollect>();
+        obstacles = new ArrayList<Obstacle>();
+        // Collectible acorns are the acorns that come along the platform for the squirrel to collect
+        collectibleAcorns = new ArrayList<AcornToCollect>();
 
+        // Projectiles are the acorns that the squirrel shoots
         projectiles = new ArrayList<Acorn>();
         obstacleSpawnTimer = 0;
-        nextObstacleSpawnTime = getRandomSpawnTime();
+        nextObstacleSpawnTime = getRandomObstacleSpawnTime();
 
         acornSpawnTimer = 0;
-        nextAcornSpawnTime = getRandomSpawnTime();
+        nextAcornSpawnTime = getRandomAcornSpawnTime();
 
         Timer clock = new Timer(SLEEP_TIME, this);
         clock.start();
@@ -67,34 +64,38 @@ public class Game implements KeyListener, ActionListener {
         return highScore;
     }
 
-    public ArrayList<ObstacleSnake> getObstacleSnakes() {
-        return obstacleSnakes;
-    }
-
-    public ArrayList<ObstacleOwl> getObstacleOwls() {
-        return obstacleOwls;
+    public ArrayList<Obstacle> getObstacles() {
+        return obstacles;
     }
 
     public ArrayList<Acorn> getAcorns() {
         return projectiles;
     }
 
-    public ArrayList<AcornToCollect> getAcornsToCollect(){return acorns;}
+    public ArrayList<AcornToCollect> getAcornsToCollect(){return collectibleAcorns;}
 
-    public int getRandomSpawnTime() {
-        // TODO: have spawn time gradually increase as the game goes on to increase difficulty
+    public int getRandomObstacleSpawnTime() {
         // Obstacle spawns every 1 to 2 seconds randomly
         return 100 + (int)(Math.random() * 101);
     }
 
+    public int getRandomAcornSpawnTime() {
+        // Acorn spawns every 4 to 7 seconds randomly. Less frequent than obstacles, since acorns shouldn't be so easy to collect.
+        return 400 + (int)(Math.random() * 301);
+    }
+
+    // Takes care of the timing of obstacle spawning between snakes and owls
     public void spawnObstacles() {
         obstacleSpawnTimer++;
 
         if (obstacleSpawnTimer >= nextObstacleSpawnTime) {
+            // For the first 50 points, only spawn snakes
             if (score < 50) {
                 spawnSnake();
+            // When the score reads between 50 and 100, only spawn owls
             } else if (score < 100) {
                 spawnOwl();
+            // After a score of 100 passes, randomly spawn either a snake or an owl at the given time interval
             } else {
                 int random = (int)(Math.random()*2);
                 if (random == 0) {
@@ -104,61 +105,57 @@ public class Game implements KeyListener, ActionListener {
                 }
             }
             obstacleSpawnTimer = 0;
-            nextObstacleSpawnTime = getRandomSpawnTime();
+            nextObstacleSpawnTime = getRandomObstacleSpawnTime();
         }
     }
 
-    public void moveSnakes() {
-        for (int i = 0; i < obstacleSnakes.size(); i++) {
-            ObstacleSnake o = obstacleSnakes.get(i);
+    // Move obstacles across the screen
+    public void moveObstacles() {
+        for (int i = 0; i < obstacles.size(); i++) {
+            Obstacle o = obstacles.get(i);
             o.move();
+            // Make sure to remove an obstacle from the ArrayList to save memory and prevent the game from crashing
             if (o.isOffScreen() || o.isDead()) {
-                obstacleSnakes.remove(i);
+                obstacles.remove(i);
                 // Account for the fact that removing an element would skip over an index
                 i--;
             }
         }
     }
 
-    public void moveOwls() {
-        for (int i = 0; i < obstacleOwls.size(); i++) {
-            ObstacleOwl o = obstacleOwls.get(i);
-            o.move();
-            if (o.isOffScreen() || o.isDead()) {
-                obstacleOwls.remove(i);
-                // Account for the fact that removing an element would skip over an index
-                i--;
-            }
-            checkGameOver();
-        }
+    // Spawn acorns to collect
+    public void spawnCollectibleAcorns() {
         acornSpawnTimer++;
-        // Spawn acorns to collect
         if (acornSpawnTimer >= nextAcornSpawnTime){
             spawnAcorn();
             acornSpawnTimer = 0;
-            nextAcornSpawnTime = getRandomSpawnTime();
+            nextAcornSpawnTime = getRandomAcornSpawnTime();
         }
+    }
 
-        // Move acorns
-        for (int i = 0; i < acorns.size(); i++){
-            AcornToCollect a = acorns.get(i);
+    // Move collectible acorns across the screen
+    public void moveCollectibleAcorns() {
+        for (int i = 0; i < collectibleAcorns.size(); i++){
+            AcornToCollect a = collectibleAcorns.get(i);
             a.move();
+            // Remove used acorns from the ArrayList
             if(a.isOffScreen() || a.isCollected()){
-                acorns.remove(i);
+                collectibleAcorns.remove(i);
                 i--;
             }
         }
     }
 
-    public void spawnProjectiles() {
+    // Shoot projectiles from the squirrel
+    public void moveProjectiles() {
         for (int i = 0; i < projectiles.size(); i++){
             Acorn a = projectiles.get(i);
             a.fire();
+            // Remove used projectiles from the ArrayList
             if (a.isOffScreen(window.getWidth())){
                 projectiles.remove(i);
                 i--;
             }
-            checkCollisions();
         }
     }
 
@@ -185,9 +182,11 @@ public class Game implements KeyListener, ActionListener {
         incrementScore();
 
         spawnObstacles();
-        moveSnakes();
-        moveOwls();
-        spawnProjectiles();
+        moveObstacles();
+        moveProjectiles();
+
+        spawnCollectibleAcorns();
+        moveCollectibleAcorns();
 
         checkGameOver();
 
@@ -240,7 +239,7 @@ public class Game implements KeyListener, ActionListener {
     }
 
     public void keyReleased(KeyEvent e){
-        switch(e.getKeyCode()){
+        switch (e.getKeyCode()){
             case KeyEvent.VK_DOWN:
                 player.stand();
                 window.repaint();
@@ -249,44 +248,39 @@ public class Game implements KeyListener, ActionListener {
     }
 
     public void keyTyped(KeyEvent e){
-        // TODO: remove if unused
+        // Unused, but required because Game implements KeyListener
     }
+
+    // Reset and clear variables
     public void restartGame() {
         player = new Player(window);
-        obstacleSnakes.clear();
-        obstacleOwls.clear();
+        obstacles.clear();
         projectiles.clear();
+        collectibleAcorns.clear();
         score = 0;
         scoreTimer = 0;
         obstacleSpawnTimer = 0;
-        nextObstacleSpawnTime = getRandomSpawnTime();
+        nextObstacleSpawnTime = getRandomObstacleSpawnTime();
         acornSpawnTimer = 0;
-        nextAcornSpawnTime = getRandomSpawnTime();
+        nextAcornSpawnTime = getRandomAcornSpawnTime();
         gameState = STATE_MAIN_GROUND;
     }
 
+    // Check for collisions between objects
     public boolean checkCollisions() {
-        // Check snake collisions
-        for (int i = 0; i < obstacleSnakes.size(); i++) {
-            ObstacleSnake o = obstacleSnakes.get(i);
+        // Check for collisions between the squirrel and the obstacles
+        for (int i = 0; i < obstacles.size(); i++) {
+            Obstacle o = obstacles.get(i);
             if (player.getBounds().intersects(o.getBounds())) {
                 return true;
             }
         }
 
-        // Check owl collisions
-        for (int i = 0; i < obstacleOwls.size(); i++) {
-            ObstacleOwl o = obstacleOwls.get(i);
-            if (player.getBounds().intersects(o.getBounds())) {
-                return true;
-            }
-        }
-
-        // Check acorn collisions
+        // Check for collisions between the projectile and the obstacles
         for (int i = 0; i < projectiles.size(); i++){
             Acorn a = projectiles.get(i);
-            for (int j = 0; j < obstacleSnakes.size(); j++){
-                ObstacleSnake o = obstacleSnakes.get(j);
+            for (int j = 0; j < obstacles.size(); j++){
+                Obstacle o = obstacles.get(j);
                 if (a.getBounds().intersects(o.getBounds())){
                     o.hit();
                     projectiles.remove(i);
@@ -297,12 +291,12 @@ public class Game implements KeyListener, ActionListener {
 
         }
 
-        // Check if Acorn is collected
-        for (int i = 0; i < acorns.size(); i++){
-            AcornToCollect a = acorns.get(i);
+        // Check if Acorn is collected (collision between squirrel and collectible acorn)
+        for (int i = 0; i < collectibleAcorns.size(); i++){
+            AcornToCollect a = collectibleAcorns.get(i);
             if (player.getBounds().intersects(a.getBounds())){
                 a.hit();
-                acorns.remove(i);
+                collectibleAcorns.remove(i);
                 player.addAcorn();
                 i--;
                 break;
@@ -316,18 +310,22 @@ public class Game implements KeyListener, ActionListener {
         window.repaint();
     }
 
+    // Add a new Obstacle object, with the Snake image, to the ArrayList (basically adds it to the queue)
     public void spawnSnake() {
-        obstacleSnakes.add(new ObstacleSnake(window));
+        obstacles.add(new Obstacle(window, "Resources/Snake.png", 75, 100, window.getPLATFORMER_HEIGHT() - 100));
     }
 
+    // Add a new Obstacle object, with the Owl image, to the ArrayList (basically adds it to the queue)
     public void spawnOwl() {
-        obstacleOwls.add(new ObstacleOwl(window));
+        obstacles.add(new Obstacle(window, "Resources/Owl.png", 100, 75, window.getPLATFORMER_HEIGHT() - 150));
     }
 
+    // Add a new collectible acorn to the ArrayList
     public void spawnAcorn(){
-        acorns.add(new AcornToCollect(window));
+        collectibleAcorns.add(new AcornToCollect(window));
     }
 
+    // Checks if the game is over and switches to STATE_END
     public void checkGameOver() {
         if (checkCollisions()) {
             if (score > highScore) {

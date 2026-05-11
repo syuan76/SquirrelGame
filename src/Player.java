@@ -1,62 +1,58 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class Player {
     private int x;
     private int y;
-    private int defaultY;
     private final int WIDTH = 100;
-    private int HEIGHT = 123;
+    private int height;
+    private final int STANDING_HEIGHT = 123;
     private int viewWidth;
     private int viewHeight;
-    private boolean isFlying;
     private Image image;
-    private double gravity = 0.25;
+    private final double GRAVITY = 0.25;
     private boolean isJumping;
-    private boolean isCollided;
-    private boolean isAlive;
     private boolean isDucking;
-    private int acorns;
+    private int numAcorns;
 
     private GameView view;
 
     // Variables for gravity
-    private double dY = 0.0;
-    private double terminalVelocity = 400.0;
+    private double dY;
+    private final double TERMINAL_VELOCITY = 400.0;
 
 
     public Player(GameView view) {
         this.view = view;
+        height = STANDING_HEIGHT;
         this.viewWidth = view.getWidth();
         this.viewHeight = view.getHeight();
-        defaultY = view.getPLATFORMER_HEIGHT() - HEIGHT;
         this.x = viewWidth / 2;
         // TODO: take care of magic numbers
-        this.y = defaultY;
+        this.y = view.getPLATFORMER_HEIGHT() - height;
         image = new ImageIcon("Resources/Squirrel.png").getImage();
-        acorns = 0;
+        numAcorns = 0;
+        dY = 0.0;
     }
 
     public void move() {
-        dY += gravity;
+        dY += GRAVITY;
 
-        if (dY > terminalVelocity) {
-            dY = terminalVelocity;
+        if (dY > TERMINAL_VELOCITY) {
+            dY = TERMINAL_VELOCITY;
         }
 
         y += dY;
 
         // Bring player back down after jump
-        if (y + HEIGHT >= view.getPLATFORMER_HEIGHT()) {
-            y = view.getPLATFORMER_HEIGHT() - HEIGHT;
+        if (y + height >= view.getPLATFORMER_HEIGHT()) {
+            y = view.getPLATFORMER_HEIGHT() - height;
             dY = 0;
             isJumping = false;
         }
     }
 
     public void jump() {
-        // TODO
         // Jump up
         if (isOnGround()) {
             dY = - 10;
@@ -65,40 +61,39 @@ public class Player {
     }
 
     public void duck() {
-        // TODO
         if (isOnGround() && !isJumping && !isDucking){
             isDucking = true;
-            HEIGHT = HEIGHT / 2;
-            y = view.getPLATFORMER_HEIGHT() - HEIGHT;
+            height = height / 2;
+            y = view.getPLATFORMER_HEIGHT() - height;
         }
     }
 
     public void stand(){
-        if(isDucking){
+        if (isDucking) {
             isDucking = false;
-            HEIGHT = 123;
-            y = view.getPLATFORMER_HEIGHT()  - HEIGHT;
+            height = STANDING_HEIGHT;
+            y = view.getPLATFORMER_HEIGHT()  - height;
         }
         isJumping = false;
     }
 
     public Acorn fireAcorn() {
-        return new Acorn(x + WIDTH, y + HEIGHT / 2);
+        return new Acorn(x + WIDTH, y + height / 2);
     }
 
     public Rectangle getBounds() {
-        return new Rectangle(x, y, WIDTH, HEIGHT);
+        return new Rectangle(x, y, WIDTH, height);
     }
 
     public void addAcorn(){
-        acorns++;
+        numAcorns++;
     }
     public void subtractAcorn(){
-        acorns--;
+        numAcorns--;
     }
 
     public int getAcornAmount(){
-        return acorns;
+        return numAcorns;
     }
     public int getX() {
         return x;
@@ -112,15 +107,15 @@ public class Player {
         return WIDTH;
     }
 
-    public int getHEIGHT() {
-        return HEIGHT;
+    public int getHeight() {
+        return height;
     }
 
     public void draw(Graphics g) {
-        g.drawImage(image, x, y, WIDTH, HEIGHT, view);
+        g.drawImage(image, x, y, WIDTH, height, view);
     }
     public boolean isOnGround() {
-        return y + HEIGHT >= view.getPLATFORMER_HEIGHT();
+        return y + height >= view.getPLATFORMER_HEIGHT();
 
     }
 }

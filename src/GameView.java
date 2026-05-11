@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 
 public class GameView extends JFrame{
@@ -14,7 +13,6 @@ public class GameView extends JFrame{
     private final int PLATFORMER_HEIGHT = 670;
 
     public GameView(Game backend) {
-        // TODO: complete constructor
         this.backend = backend;
 
         this.coverImage = new ImageIcon("Resources/CoverImage.png").getImage();
@@ -38,8 +36,6 @@ public class GameView extends JFrame{
     }
 
     public void drawInstructions(Graphics g) {
-        // TODO: If time permits, replace instructions window with one designed on Canva
-
         g.drawImage(instructions, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
     }
 
@@ -47,6 +43,7 @@ public class GameView extends JFrame{
         g.drawImage(background, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, this);
     }
 
+    // During gameplay, draws Score and High Score in the top left hand corner of the window.
     public void drawScore(Graphics g) {
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 28));
@@ -54,22 +51,11 @@ public class GameView extends JFrame{
         g.drawString("High Score: " + backend.getHighScore(), 30, 85);
     }
 
-    public void drawAcorns(Graphics g){
+    // During gameplay, draws the amount of acorns the squirrel currently has in the top right hand corner of the window.
+    public void drawAcornAmount(Graphics g){
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 28));
         g.drawString("Acorns: " + backend.getPlayer().getAcornAmount(), 1000, 55);
-    }
-
-    public void keyTyped(KeyEvent e) {
-        // TODO
-    }
-
-    public void keyPressed(KeyEvent e) {
-        // TODO
-    }
-
-    public void KeyReleased(KeyEvent e) {
-        // TODO
     }
 
     public void drawGameOver(Graphics g) {
@@ -105,24 +91,26 @@ public class GameView extends JFrame{
             drawInstructions(g);
         } else if (backend.getGameState() == Game.STATE_MAIN_GROUND) {
             drawBackgroundPlatform(g);
+
             drawScore(g);
-            // Draw Snake Obstacles
-            for (int i = 0; i < backend.getObstacleSnakes().size(); i++) {
-                backend.getObstacleSnakes().get(i).draw(g);
+
+            // Draw Obstacles
+            for (int i = 0; i < backend.getObstacles().size(); i++) {
+                backend.getObstacles().get(i).draw(g);
             }
-            // Draw Owl Obstacles
-            for (int i = 0; i < backend.getObstacleOwls().size(); i++) {
-                backend.getObstacleOwls().get(i).draw(g);
-            }
-            drawAcorns(g);
+
+            drawAcornAmount(g);
+
             // Draw acorns
             for (int i = 0; i < backend.getAcorns().size(); i++){
                 backend.getAcorns().get(i).draw(g);
             }
+
             // Draw acorns to collect
             for (int i = 0; i < backend.getAcornsToCollect().size(); i++){
                 backend.getAcornsToCollect().get(i).draw(g);
             }
+
             // Draw Player
             backend.getPlayer().draw(g);
         } else if (backend.getGameState() == Game.STATE_END) {
