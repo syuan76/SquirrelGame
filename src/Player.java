@@ -28,7 +28,6 @@ public class Player {
         this.viewWidth = view.getWidth();
         this.viewHeight = view.getHeight();
         this.x = viewWidth / 2;
-        // TODO: take care of magic numbers
         this.y = view.getPLATFORMER_HEIGHT() - height;
         image = new ImageIcon("Resources/Squirrel.png").getImage();
         numAcorns = 0;
@@ -36,12 +35,15 @@ public class Player {
     }
 
     public void move() {
+        // Apply gravity by increasing downward velocity
         dY += GRAVITY;
 
+        // Cap the falling speed so the player doesn't keep falling
         if (dY > TERMINAL_VELOCITY) {
             dY = TERMINAL_VELOCITY;
         }
 
+        // Move the player vertically based on current velocity
         y += dY;
 
         // Bring player back down after jump
@@ -54,26 +56,35 @@ public class Player {
 
     public void jump() {
         // Jump up
+        // Only allow the player to jump if they are still on the ground
         if (isOnGround()) {
+            // Apply upward velocity to launch player
             dY = - 10;
             isJumping = true;
         }
     }
 
     public void duck() {
+        // Only allow player to duck when they're on the ground and aren't jumping or already ducking
         if (isOnGround() && !isJumping && !isDucking){
             isDucking = true;
+            // Halve the player's height to make it seem like the player is crouching
             height = height / 2;
+            // Reposition player so their feet are on the ground again
             y = view.getPLATFORMER_HEIGHT() - height;
         }
     }
 
     public void stand(){
+        // Only restore standing state if player is ducking
         if (isDucking) {
             isDucking = false;
+            // Restore the player's full height, making them stand
             height = STANDING_HEIGHT;
+            // Keep players feet on the ground
             y = view.getPLATFORMER_HEIGHT()  - height;
         }
+        // Ensure the jumping is cleared when standing
         isJumping = false;
     }
 
