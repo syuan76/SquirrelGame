@@ -248,7 +248,7 @@ public class Game implements KeyListener, ActionListener {
     }
 
     public void keyTyped(KeyEvent e){
-        // Unused, but required because Game implements KeyListener
+        // TODO: remove if unused
     }
 
     // Reset and clear variables

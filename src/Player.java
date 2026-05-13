@@ -55,7 +55,6 @@ public class Player {
     }
 
     public void jump() {
-        // Jump up
         // Only allow the player to jump if they are still on the ground
         if (isOnGround()) {
             // Apply upward velocity to launch player
