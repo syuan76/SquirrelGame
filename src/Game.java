@@ -39,7 +39,7 @@ public class Game implements KeyListener, ActionListener {
         // Projectiles are the acorns that the squirrel shoots
         projectiles = new ArrayList<Acorn>();
         obstacleSpawnTimer = 0;
-        nextObstacleSpawnTime = getRandomSpawnTime();
+        nextObstacleSpawnTime = getRandomObstacleSpawnTime();
 
         acornSpawnTimer = 0;
         nextAcornSpawnTime = getRandomAcornSpawnTime();
